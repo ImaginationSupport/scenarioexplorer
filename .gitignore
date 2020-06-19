@@ -1,23 +1,48 @@
-# Compiled class file
-*.class
+######################### Intellij entries from: https://www.gitignore.io/api/intellij #########################
 
-# Log file
-*.log
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/dictionaries
+.idea/misc.xml
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/.name
 
-# BlueJ files
-*.ctxt
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.xml
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+.idea/bashsupport_project.xml
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
+out/
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+######################### Scenario Explorer entries #########################
+
+docker/images/web-ui*/*.war
+docker/images/web-ui*/*.tar.gz
+docker/compose/aws/teamcity-server/*.jar
+docker/compose/aws/*.env
+docker/compose/aws/ldap/add-users.ldif
+docker/compose/localdev/localdev-aws-credentials.env
+docker/compose/aws/pull-all-docker-images-from-registry.sh
+
+thirdparty/
+
+support/build/
+support/output/
+support/localdev.build.number.txt
+support/helper-scripts/push-all-docker-images-to-registry.sh
+support/helper-scripts/pull-all-docker-images-from-registry.sh
+support/helper-scripts/rebuild-docker-images.sh
+
+logs/*
+console-tools/working-dir/*.yaml
+*.patch
+
+se_config.txt
+
