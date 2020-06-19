@@ -1,0 +1,637 @@
+<project name="LAS - Scenario Explorer - Web UI">
+
+	<property name="web-ui.sass.input.filename" value="web-ui.scss" />
+	<property name="web-ui.sass.output.filename" value="scenarioexplorer.min.css" />
+
+	<!-- holds the JARs required on the tomcat server that are located in the common lib dir -->
+	<fileset id="web-ui-common.required.jars" dir="${common.lib.path}">
+		<include name="${log4j-web.jar.filename}" />
+		<include name="${log4j-jul.jar.filename}" />
+		<include name="${log4j-mongodb.jar.filename}" />
+		<include name="${apache-commons-lang3.jar.filename}" />
+		<include name="${apache-commons-text.jar.filename}" />
+		<include name="${apache-httpcomponents-httpcore.jar.filename}" />
+		<include name="${apache-httpcomponents-httpclient.jar.filename}" />
+		<include name="${apache-httpcomponents-httpmime.jar.filename}" />
+	</fileset>
+
+	<!-- holds the JARs required to compile this project -->
+	<path id="web-ui.compile.classpath">
+		<pathelement location="${mongo-java-driver.jar.path}" />
+		<pathelement location="${log4j-api.jar.path}" />
+		<pathelement location="${log4j-core.jar.path}" />
+		<pathelement location="${apache-commons-lang3.jar.path}" />
+		<pathelement location="${apache-commons-text.jar.path}" />
+		<pathelement location="${apache-httpcomponents-httpcore.jar.path}" />
+		<pathelement location="${apache-httpcomponents-httpclient.jar.path}" />
+		<pathelement location="${apache-httpcomponents-httpmime.jar.path}" />
+		<pathelement location="${org.json.jar.path}" />
+		<pathelement location="${apache-tomcat-servlet-api.jar.path}" />
+		<pathelement location="${apache-tomcat-jsp-api.jar.path}" />
+		<pathelement location="${apache-tomcat-websocket-api.jar.path}" />
+		<pathelement location="${apache-tomcat-catalina.jar.path}" />
+		<pathelement location="${junit4.jar.path}" />
+	</path>
+
+	<path id="web-ui.test.classpath">
+		<pathelement location="${mongo-java-driver.jar.path}" />
+		<pathelement location="${log4j-api.jar.path}" />
+		<pathelement location="${log4j-core.jar.path}" />
+		<pathelement location="${log4j-jul.jar.path}" />
+		<pathelement location="${log4j-mongodb.jar.path}" />
+		<pathelement location="${morphia.jar.path}" />
+		<pathelement location="${org.json.jar.path}" />
+		<pathelement location="${nashornsandbox.jar.path}" />
+		<!--<pathelement location="${js-beautify.jar.path}" />-->
+
+		<!--<pathelement location="${apache-commons-lang3.jar.path}" />-->
+		<!--<pathelement location="${apache-commons-text.jar.path}" />-->
+		<!--<pathelement location="${apache-httpcomponents-httpcore.jar.path}" />-->
+		<!--<pathelement location="${apache-httpcomponents-httpclient.jar.path}" />-->
+		<!--<pathelement location="${apache-httpcomponents-httpmime.jar.path}" />-->
+		<!--<pathelement location="${apache-tomcat-servlet-api.jar.path}" />-->
+		<!--<pathelement location="${apache-tomcat-jsp-api.jar.path}" />-->
+		<!--<pathelement location="${apache-tomcat-websocket-api.jar.path}" />-->
+		<!--<pathelement location="${apache-tomcat-catalina.jar.path}" />-->
+
+		<pathelement location="${junit4.jar.path}" />
+		<pathelement location="${hamcrest-core.jar.path}" />
+	</path>
+
+	<!-- holds the JARs required on the tomcat server that are located in the web lib dir -->
+	<!--<fileset id="web-ui-web.required.jars" dir="${web.lib.path}">-->
+	<!--</fileset>-->
+
+	<union id="web-ui.tomcat.jars.fileset">
+		<resources refid="common.required.jars" />
+		<resources refid="web-ui-common.required.jars" />
+		<!--<resources refid="web-ui-web.required.jars" />-->
+	</union>
+
+	<property name="web-ui.tomcat.jars.tar.gz.filename" value="web-ui.tomcat.jars.tar.gz" />
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="compile-web-ui-java" description="Compiles the Web-UI java source code" depends="
+		finish-config,
+		build-common-jar,
+		create-build-dir">
+
+		<fail unless="common.jar.path" message="Common JAR path does not exist!" />
+
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${mongo-java-driver.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${log4j-api.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${log4j-core.jar.path}" />
+		</antcall>
+		<!--<antcall target="verify-path-exists">-->
+		<!--<param name="path.to.verify" value="${log4j-web.jar.path}" />-->
+		<!--</antcall>-->
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-commons-lang3.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-commons-text.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-httpcomponents-httpcore.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-httpcomponents-httpclient.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-httpcomponents-httpmime.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${org.json.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-tomcat-servlet-api.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-tomcat-jsp-api.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-tomcat-websocket-api.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-tomcat-catalina.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${junit4.jar.path}" />
+		</antcall>
+
+		<!-- create the base directory -->
+		<property name="web-ui.build.path" value="${build.path}/web-ui" />
+		<mkdir dir="${web-ui.build.path}" />
+
+		<!-- create the staging src directory -->
+		<property name="web-ui.build.src.path" value="${web-ui.build.path}/src" />
+		<mkdir dir="${web-ui.build.src.path}" />
+
+		<!-- stage the java files into the build directory -->
+		<copy todir="${web-ui.build.src.path}">
+
+			<!-- from web-common -->
+			<fileset dir="${web-common.project.path}/src">
+				<include name="**/*.java" />
+			</fileset>
+
+			<!-- from web-ui -->
+			<fileset dir="${web-ui.project.path}/src">
+				<include name="**/*.java" />
+			</fileset>
+		</copy>
+
+		<!-- create the staging test directory -->
+		<property name="web-ui.build.test.path" value="${web-ui.build.path}/test" />
+		<mkdir dir="${web-ui.build.test.path}" />
+
+		<!-- stage the java files into the build directory -->
+		<copy todir="${web-ui.build.test.path}">
+			<fileset dir="${web-ui.project.path}/test">
+				<include name="**/*.java" />
+			</fileset>
+		</copy>
+
+		<!-- update the WebCommon if we are using auth -->
+		<property name="web-ui.build.WebCommon.java.path" value="${web-ui.build.src.path}/com/imaginationsupport/web/WebCommon.java" />
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${web-ui.build.WebCommon.java.path}" />
+		</antcall>
+		<replaceregexp
+			file="${web-ui.build.WebCommon.java.path}"
+			match="static final boolean USING_AUTHENTICATION = (true|false);"
+			replace="static final boolean USING_AUTHENTICATION = ${using.auth.bool};"
+			byline="true" />
+
+		<property name="web-ui.build.classes.path" value="${web-ui.build.path}/classes" />
+		<mkdir dir="${web-ui.build.classes.path}" />
+
+		<!-- compile the updated java files -->
+		<javac destdir="${web-ui.build.classes.path}" debug="true" target="${java.target.version}" source="${java.target.version}" includeAntRuntime="false">
+			<src path="${web-ui.build.src.path}" />
+			<src path="${web-ui.build.test.path}" />
+
+			<classpath refid="web-ui.compile.classpath" />
+			<classpath location="${common.jar.path}" />
+
+			<compilerarg value="-Xlint" />
+			<compilerarg value="-Xlint:-processing" />
+		</javac>
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="test-web-ui" description="Runs all JUnit tests for the Web-UI project" depends="
+		compile-common-java,
+		compile-web-ui-java,
+		create-output-dir">
+
+		<!-- TODO: switch to junit 5 -->
+
+		<!-- junit4 -->
+
+		<!-- verify all the lib files exist -->
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${junit4.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${hamcrest-core.jar.path}" />
+		</antcall>
+
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${log4j-api.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${log4j-core.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${log4j-jul.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${log4j-mongodb.jar.path}" />
+		</antcall>
+
+		<property name="web-ui.test.output.path" value="${build.path}/web-ui-tests" />
+		<mkdir dir="${web-ui.test.output.path}" />
+
+		<!-- empty any text already in the log file -->
+		<echo message="Cleaning log file: ${junit.log.path}" />
+		<echo file="${junit.log.path}" />
+
+		<junit haltonfailure="no" fork="true" dir="${junit.working.dir.path}">
+
+			<sysproperty key="java.util.logging.manager" value="org.apache.logging.log4j.jul.LogManager" />
+
+			<!--<sysproperty key="log4j2.debug" value="true" />-->
+			<sysproperty key="log4j.configurationFile" value="${junit.working.dir.path}/log4j2.xml" />
+
+			<!-- change the database to use so we don't lose or overwrite any real data -->
+			<env key="SE_MONGODB_DATABASE" value="junit-testing" />
+
+			<classpath>
+				<path refid="web-ui.test.classpath" />
+				<pathelement location="${web-ui.build.classes.path}" />
+				<pathelement location="${common.jar.path}" />
+			</classpath>
+
+			<formatter type="brief" usefile="false" />
+			<formatter type="xml" usefile="true" />
+
+			<batchtest todir="${web-ui.test.output.path}">
+				<fileset dir="${web-ui.build.test.path}" includes="**/Test*.java" />
+			</batchtest>
+
+		</junit>
+
+		<!-- copy the log file to the build output directory -->
+		<copy file="${junit.log.path}" todir="${web-ui.test.output.path}" />
+
+		<property name="junitreport.working.path" value="${build.path}/web-ui-junitreport-working" />
+		<mkdir dir="${junitreport.working.path}" />
+
+		<property name="junitreport.output.path" value="${output.path}/web-ui-junitreport" />
+		<mkdir dir="${junitreport.output.path}" />
+
+		<junitreport todir="${junitreport.working.path}">
+
+			<fileset dir="${web-ui.test.output.path}">
+				<include name="TEST-*.xml" />
+			</fileset>
+
+			<report format="noframes" styledir="${junit-report.config.path}" todir="${junitreport.output.path}" />
+
+		</junitreport>
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="configure-web-ui-auth" if="using.auth">
+
+		<!-- load the context.xml auth setup -->
+		<loadfile srcFile="${web-ui.project.path}/web/META-INF/context.xml.auth-setup" property="web-ui.context-xml.auth.setup" />
+
+		<!-- load the web.xml auth setup -->
+		<loadfile srcFile="${web-ui.project.path}/web/WEB-INF/web.xml.auth-setup" property="web-ui.web-xml.auth.setup" />
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="stage-web-ui-static-content" depends="
+		finish-config,
+		configure-web-ui-auth">
+
+		<!-- copy all of the static web files (js, css, images and config files) to the build directory -->
+		<property name="web-ui.build.WebContent.path" value="${web-ui.build.path}/webcontent" />
+		<copy todir="${web-ui.build.WebContent.path}">
+
+			<!-- from web-common -->
+			<fileset dir="${web-common.project.path}/web">
+				<include name="*.jsp" />
+
+				<include name="js/*.js" />
+				<include name="js/third-party/*.js" />
+				<include name="js/third-party/*.js.map" />
+				<exclude name="**/*externs.js" />
+
+				<include name="css/*.css" />
+				<include name="css/*.css.map" />
+				<include name="css/sass/*.scss" />
+
+				<include name="img/*.png" />
+				<include name="img/*.jpg" />
+			</fileset>
+
+			<!-- from web-ui -->
+			<fileset dir="${web-ui.project.path}/web">
+				<include name="*.jsp" />
+				<include name="timeline-events-upload-sample.csv" />
+
+				<include name="js/*.js" />
+				<include name="js/api/*.js" />
+				<include name="js/view-canvas/*.js" />
+				<include name="js/third-party/*.js" />
+				<include name="js/third-party/*.js.map" />
+				<include name="js/plugins/**/*.js" />
+				<exclude name="**/*externs.js" />
+
+				<include name="css/*.css" />
+				<include name="css/*.css.map" />
+				<include name="css/sass/*.scss" />
+				<include name="img/*.png" />
+				<include name="img/*.jpg" />
+
+				<include name="WEB-INF/web.xml" />
+				<include name="WEB-INF/log4j2.xml" />
+				<include name="WEB-INF/**.tld" />
+
+				<include name="META-INF/context.xml" />
+			</fileset>
+		</copy>
+
+		<!-- copy the taglib templates -->
+		<property name="web-ui.build.classes.templates.path" value="${web-ui.build.classes.path}/templates" />
+		<mkdir dir="${web-ui.build.classes.templates.path}" />
+		<copy todir="${web-ui.build.classes.templates.path}">
+			<fileset dir="${web-common.project.path}/templates">
+				<include name="**/*.html" />
+			</fileset>
+		</copy>
+
+		<!-- copy any theme files over the base files -->
+		<fail unless="web-ui.theme.name" message="Web UI theme name not set!" />
+		<property name="web-ui.theme.path" value="${web-common.project.path}/themes/${web-ui.theme.name}" />
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${web-ui.theme.path}" />
+		</antcall>
+		<copy todir="${web-ui.build.classes.templates.path}" overwrite="true">
+			<fileset dir="${web-ui.theme.path}">
+				<include name="*.html" />
+			</fileset>
+		</copy>
+
+		<!-- set default text if we aren't using auth -->
+		<property name="web-ui.web-xml.auth.setup" value="&lt;!-- not using auth --&gt;" />
+		<property name="web-ui.context-xml.auth.setup" value="&lt;!-- not using auth --&gt;" />
+
+		<!-- replace the template placeholder in the META-INF/context.xml file -->
+		<replace file="${web-ui.build.WebContent.path}/META-INF/context.xml" token="&lt;!-- TEMPLATE: AUTH SETUP --&gt;" value="${web-ui.context-xml.auth.setup}" />
+
+		<!-- replace the template placeholder in the WEB-INF/web.xml file -->
+		<replace file="${web-ui.build.WebContent.path}/WEB-INF/web.xml" token="&lt;!-- TEMPLATE: AUTH SETUP --&gt;" value="${web-ui.web-xml.auth.setup}" />
+
+		<!-- inject path into the context.xml -->
+		<!--<replaceregexp-->
+		<!--file="${web-ui.build.WebContent.path}/META-INF/context.xml"-->
+		<!--match="(\s)path=&quot;.*&quot;"-->
+		<!--replace="\1path=&quot;${tomcat.deploy.path}&quot;"-->
+		<!--byline="true" />-->
+
+		<!-- inject doc base into the context.xml -->
+		<!--<replaceregexp-->
+		<!--file="${web-ui.build.WebContent.path}/META-INF/context.xml"-->
+		<!--match="(\s)docBase=&quot;.*?&quot;"-->
+		<!--replace="\1docBase=&quot;${app.name}&quot;"-->
+		<!--byline="true" />-->
+
+		<!-- inject LDAP base DN into the context.xml -->
+		<replaceregexp
+			file="${web-ui.build.WebContent.path}/META-INF/context.xml"
+			match="\{\{ldap.basedn\}\}"
+			replace="${ldap.basedn}"
+			byline="true" />
+
+		<!-- inject LDAP group name into the context.xml -->
+		<!--<replaceregexp-->
+		<!--file="${web-ui.build.WebContent.path}/WEB-INF/web.xml"-->
+		<!--match="\{\{ldap\.group\.name\}\}"-->
+		<!--replace="${ldap.group.name}"-->
+		<!--byline="true" />-->
+		<!-- this is disabled because we are only using LDAP for authentication and leaving the app to do authorization -->
+
+		<!-- Inject app.name into JSP's and template files -->
+		<replaceregexp match="\{\{app\.name\}\}" replace="${app.name}" byline="true" flags="g">
+			<fileset dir="${web-ui.build.WebContent.path}">
+				<include name="*.jsp" />
+			</fileset>
+			<fileset dir="${web-ui.build.classes.templates.path}">
+				<include name="*.html" />
+			</fileset>
+		</replaceregexp>
+
+		<!-- Inject app.version into JSP's and template files -->
+		<replaceregexp match="\{\{app\.version\}\}" replace="${app.version}" byline="true" flags="g">
+			<fileset dir="${web-ui.build.WebContent.path}">
+				<include name="*.jsp" />
+			</fileset>
+			<fileset dir="${web-ui.build.classes.templates.path}">
+				<include name="*.html" />
+			</fileset>
+		</replaceregexp>
+
+		<!-- Inject build.time into JSP's and template files -->
+		<replaceregexp match="\{\{build\.time\}\}" replace="${build.time}" byline="true" flags="g">
+			<fileset dir="${web-ui.build.WebContent.path}">
+				<include name="*.jsp" />
+			</fileset>
+			<fileset dir="${web-ui.build.classes.templates.path}">
+				<include name="*.html" />
+			</fileset>
+		</replaceregexp>
+
+		<!-- Inject build.number into JSP's and template files -->
+		<replaceregexp match="\{\{build\.number\}\}" replace="${build.number}" byline="true" flags="g">
+			<fileset dir="${web-ui.build.WebContent.path}">
+				<include name="*.jsp" />
+			</fileset>
+			<fileset dir="${web-ui.build.classes.templates.path}">
+				<include name="*.html" />
+			</fileset>
+		</replaceregexp>
+
+		<!-- Inject git.commit.id into JSP's and template files -->
+		<replaceregexp match="\{\{git\.commit\.id\}\}" replace="${git.commit.id}" byline="true" flags="g">
+			<fileset dir="${web-ui.build.WebContent.path}">
+				<include name="*.jsp" />
+			</fileset>
+			<fileset dir="${web-ui.build.classes.templates.path}">
+				<include name="*.html" />
+			</fileset>
+		</replaceregexp>
+
+		<!-- Inject git.branch into JSP's and template files -->
+		<replaceregexp match="\{\{git\.branch\}\}" replace="${git.branch}" byline="true" flags="g">
+			<fileset dir="${web-ui.build.WebContent.path}">
+				<include name="*.jsp" />
+			</fileset>
+			<fileset dir="${web-ui.build.classes.templates.path}">
+				<include name="*.html" />
+			</fileset>
+		</replaceregexp>
+
+		<!-- Inject web-ui.deploy.path into JSP's and template files -->
+		<replaceregexp match="\{\{web-ui\.deploy\.path\}\}" replace="${web-ui.deploy.path}" byline="true" flags="g">
+			<fileset dir="${web-ui.build.WebContent.path}">
+				<include name="*.jsp" />
+			</fileset>
+			<fileset dir="${web-ui.build.classes.templates.path}">
+				<include name="*.html" />
+			</fileset>
+		</replaceregexp>
+
+		<!-- Inject web-user-support.deploy.path into JSP's and template files -->
+		<replaceregexp match="\{\{web-user-support\.deploy\.path\}\}" replace="${web-user-support.deploy.path}" byline="true" flags="g">
+			<fileset dir="${web-ui.build.WebContent.path}">
+				<include name="*.jsp" />
+			</fileset>
+			<fileset dir="${web-ui.build.classes.templates.path}">
+				<include name="*.html" />
+			</fileset>
+		</replaceregexp>
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="compile-web-ui-css" depends="stage-web-ui-static-content"><!-- TODO should be a common antcall target -->
+		<fail unless="sass.style" message="Property missing: sass.style" />
+
+		<!-- run sass -->
+		<echo message="Using: ${sass.style}" />
+		<exec executable="sass" failonerror="true">
+			<arg line="--update" />
+			<arg line="--style" />
+			<arg line="${sass.style}" />
+			<arg line="${web-ui.build.WebContent.path}/css/sass/${web-ui.sass.input.filename}:${web-ui.build.WebContent.path}/css/${web-ui.sass.output.filename}" />
+		</exec>
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="init-compile-web-ui-js"><!-- TODO should be a common antcall target -->
+		<echo message="(not implemented)" /><!-- TODO finish! -->
+	</target>
+
+	<target name="compile-web-ui-js" depends="init-compile-web-ui-js"><!-- TODO should be a common antcall target -->
+		<echo message="(not implemented)" /><!-- TODO finish! -->
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="build-web-ui-war" description="Builds the Web-UI WAR file" depends="
+		finish-config,
+		build-common-jar,
+		compile-web-ui-java,
+		stage-web-ui-static-content,
+		generate-swagger-v2,
+		generate-openapi-v3,
+		compile-web-ui-css,
+		compile-web-ui-js,
+		create-output-dir">
+
+		<fail unless="build.time" message="Property missing: build.time" />
+		<fail unless="build.number" message="Property missing: build.number" />
+		<fail unless="git.branch" message="Property missing: git.branch" />
+		<fail unless="git.commit.id" message="Property missing: git.commit.id" />
+		<fail unless="app.name" message="Property missing: app.name" />
+		<fail unless="app.version" message="Property missing: app.version" />
+
+		<fail unless="common.jar.path" message="Common JAR path does not exist!" />
+
+		<copy file="${swagger-v2.path}" todir="${web-ui.build.WebContent.path}" />
+		<replaceregexp
+			file="${web-ui.build.WebContent.path}/${swagger-v2.filename}"
+			match="version: &quot;\[version\]&quot;"
+			replace="version: &quot;${app.version}&quot;"
+			byline="true" />
+		<replaceregexp
+			file="${web-ui.build.WebContent.path}/${swagger-v2.filename}"
+			match="description: &quot;\[description\]&quot;"
+			replace="description: &quot;API documentation ${app.version} from ${git.branch} commit ${git.commit.id} - build ${build.number}&quot;"
+			byline="true" />
+
+		<copy file="${openapi-v3.path}" todir="${web-ui.build.WebContent.path}" />
+
+		<property name="web-ui.war.path" value="${output.path}/${web-ui.war.filename}" />
+		<echo message="Output WAR: ${web-ui.war.path}" />
+
+		<war destfile="${web-ui.war.path}" duplicate="fail" webxml="${web-ui.build.WebContent.path}/WEB-INF/web.xml">
+			<manifest>
+				<attribute name="Sealed" value="true" />
+				<attribute name="Built-On" value="${build.time}" />
+				<attribute name="Created-By" value="${app.name} development team" />
+				<attribute name="Build-Version" value="${app.version} from ${git.branch} commit ${git.commit.id} - build ${build.number}" />
+				<attribute name="Class-Path" value="" />
+			</manifest>
+
+			<classes dir="${web-ui.build.classes.path}" />
+
+			<fileset dir="${web-ui.build.WebContent.path}" /><!-- TODO this should only be used for debug builds -->
+			<!--<fileset dir="${web-ui.build.WebContent.path}">-->
+			<!--<exclude name="**/sass/**" />-->
+			<!--</fileset>-->
+
+			<lib file="${common.jar.path}" />
+		</war>
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="build-web-ui-tomcat-server-jars-tar-gz" description="Bundles all helper JAR files the Tomcat server needs for the Web-UI project" depends="
+		finish-config,
+		build-common-jar,
+		create-output-dir">
+
+		<property name="web-ui.tomcat.jars.tar.temp.path" value="${build.path}/web-ui.tomcat.jars.temp.tar" />
+		<property name="web-ui.tomcat.jars.tar.gz.path" value="${output.path}/${web-ui.tomcat.jars.tar.gz.filename}" />
+
+		<tar destfile="${web-ui.tomcat.jars.tar.temp.path}">
+			<resources refid="web-ui.tomcat.jars.fileset" />
+		</tar>
+		<gzip destfile="${web-ui.tomcat.jars.tar.gz.path}" src="${web-ui.tomcat.jars.tar.temp.path}" />
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="undeploy-web-ui" description="Removes the Web-UI project on the running Tomcat server" depends="
+		load-properties-deploy-tomcat,
+		init-tomcat-tasks">
+
+		<fail unless="tomcat.username" message="Property missing: tomcat.username" />
+		<fail unless="tomcat.password" message="Property missing: tomcat.password" />
+
+		<antcall target="undeploy-tomcat" inheritAll="false">
+			<param name="tomcat.protocol" value="${tomcat.protocol}" />
+			<param name="tomcat.hostname" value="${tomcat.hostname}" />
+			<param name="tomcat.port" value="${tomcat.port}" />
+			<param name="tomcat.username" value="${tomcat.username}" />
+			<param name="tomcat.password" value="${tomcat.password}" />
+			<param name="tomcat.deploy.path" value="${tomcat.deploy.path}" />
+		</antcall>
+	</target>
+
+	<target name="deploy-web-ui" description="Deploys the Web-UI project on the running Tomcat server" depends="
+		load-properties-deploy-tomcat,
+		init-tomcat-tasks,
+		build-web-ui-war,
+		undeploy-web-ui">
+
+		<fail unless="tomcat.username" message="Property missing: tomcat.username" />
+		<fail unless="tomcat.password" message="Property missing: tomcat.password" />
+
+		<antcall target="deploy-tomcat" inheritAll="false">
+			<param name="tomcat.protocol" value="${tomcat.protocol}" />
+			<param name="tomcat.hostname" value="${tomcat.hostname}" />
+			<param name="tomcat.port" value="${tomcat.port}" />
+			<param name="tomcat.username" value="${tomcat.username}" />
+			<param name="tomcat.password" value="${tomcat.password}" />
+			<param name="tomcat.deploy.path" value="${tomcat.deploy.path}" />
+			<param name="war.path" value="${web-ui.war.path}" />
+		</antcall>
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="use-web-ui-theme-ara" description="Configures the build to use the ARA theme for the Web-UI">
+		<fail if="web-ui.theme.name" message="Theme already set!  (Currently: ${web-ui.theme.name})" />
+		<property name="web-ui.theme.name" value="ara" />
+	</target>
+
+	<target name="use-web-ui-theme-ncsu" description="Configures the build to use the NCSU theme for the Web-UI">
+		<fail if="web-ui.theme.name" message="Theme already set!  (Currently: ${web-ui.theme.name})" />
+		<property name="web-ui.theme.name" value="ncsu" />
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+</project>

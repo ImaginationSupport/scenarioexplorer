@@ -1,0 +1,57 @@
+cd /support/helper-scripts
+
+# build the containers to bootstrap the cluster
+./rebuild-docker-images.sh --bootstrap
+
+# start LDAP and Dev Console and populate the LDAP
+docker-compose -f ../../docker/compose/localdev/docker-compose.yaml up -d ldap dev-console
+docker exec -t dev-console bash -c "ldapmodify -x -D \${SE_LDAP_ROOT_DN} -w \${SE_LDAP_ROOT_PW} -H ldap://ldap -f /imaginationsupport/docker/images/ldap/initial-setup.ldif -c"
+docker exec -t dev-console bash -c "ldapmodify -x -D \${SE_LDAP_ROOT_DN} -w \${SE_LDAP_ROOT_PW} -H ldap://ldap -f /imaginationsupport/docker/images/ldap/add-dev-users.ldif -c"
+
+# build the web-ui containers
+./run-dockerized-ant-build.sh clean prep-docker-build-web-ui-ara
+./run-dockerized-ant-build.sh clean prep-docker-build-web-ui-ncsu
+docker-compose -f ../../docker/compose/localdev/docker-compose.yaml up -d web-ui
+
+# start the reverse proxy
+docker-compose -f ../../docker/compose/localdev-full/docker-compose.yaml up -d reverse-proxy
+docker cp ../../docker/compose/localdev-full/reverse-proxy/localhost.conf.tmpl reverse-proxy:/docker/nginx.conf.tmpl
+docker exec -t reverse-proxy /reload-nginx-config.sh
+
+# debugging web:
+docker exec -t web-ui tail -n 100 /usr/local/tomcat/logs/imagination-support-web.log
+
+# update the base images
+docker pull centos:7 \
+	&& docker pull alpine:3.7 \
+	&& docker pull mongo:3.6-jessie \
+	&& docker pull debian:jessie-slim \
+	&& docker pull tomcat:9-jre8 \
+	&& docker pull jetbrains/teamcity-server \
+	&& docker pull jetbrains/teamcity-agent \
+	&& docker pull postgres:10.2-alpine
+
+====================================================================================================
+deploy a release:
+
+===== on dev environment =====
+
+1) update the tag name in /support/helper-scripts/push-all-docker-images-to-registry.sh
+
+2) prep the docker builds
+	./run-dockerized-ant-build.sh clean prep-docker-build-web-ui-ncsu
+
+3) rebuild the docker images
+	./rebuild-docker-images.sh
+
+4) push to the docker registry
+	./push-all-docker-images-to-registry.sh
+
+===== on production =====
+
+5) pull the docker images:
+	~/pull-all-docker-images-from-registry.sh
+
+6) restart the containers with the new images:
+	docker-compose -f ~/docker-compose-aws/docker-compose.yaml up -d
+

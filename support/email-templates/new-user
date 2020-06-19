@@ -1,0 +1,14 @@
+Hello,
+
+You have been given access to Scenario Explorer:
+
+Username: {{uid}}
+Password: {{password}}
+
+You can access the site:
+<a href="{{web-ui-url}}">{{web-ui-url}}</a>
+
+If you need to reset your password or have trouble logging in, please visit:
+<a href="{{web-user-support-url}}">{{web-user-support-url}}</a>
+
+Thanks!

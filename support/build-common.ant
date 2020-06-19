@@ -1,0 +1,338 @@
+<project name="LAS - Scenario Explorer - Common">
+
+	<!-- JAR files needed to be on the tomcat server -->
+	<fileset id="common.required.jars" dir="${common.lib.path}">
+		<include name="${log4j-api.jar.filename}" />
+		<include name="${log4j-core.jar.filename}" />
+		<include name="${log4j-web.jar.filename}" />
+		<include name="${log4j-jul.jar.filename}" />
+		<include name="${log4j-mongodb.jar.filename}" />
+		<include name="${org.json.jar.filename}" />
+		<include name="${mongo-java-driver.jar.filename}" />
+		<include name="${morphia.jar.filename}" />
+		<include name="${apache-commons-codec.jar.filename}" />
+		<include name="${apache-commons-csv.jar.filename}" />
+		<include name="${apache-commons-math3.jar.filename}" />
+		<include name="${apache-commons-lang3.jar.filename}" />
+		<include name="${apache-httpcomponents-httpcore.jar.filename}" />
+		<include name="${apache-httpcomponents-httpclient.jar.filename}" />
+		<include name="${apache-httpcomponents-httpmime.jar.filename}" />
+		<include name="${javax-mail.jar.filename}" />
+		<include name="${gson.jar.filename}" />
+		<include name="${nashornsandbox.jar.filename}" />
+		<include name="${js-beautify.jar.filename}" />
+	</fileset>
+
+	<!-- JAR files needed to compile the source code -->
+	<path id="common.compile.classpath">
+		<pathelement location="${log4j-api.jar.path}" />
+		<pathelement location="${log4j-core.jar.path}" />
+		<pathelement location="${org.json.jar.path}" />
+		<pathelement location="${mongo-java-driver.jar.path}" />
+		<pathelement location="${morphia.jar.path}" />
+		<pathelement location="${apache-commons-codec.jar.path}" />
+		<pathelement location="${apache-commons-csv.jar.path}" />
+		<pathelement location="${apache-commons-math3.jar.path}" />
+		<pathelement location="${apache-commons-lang3.jar.path}" />
+		<pathelement location="${apache-httpcomponents-httpcore.jar.path}" />
+		<pathelement location="${apache-httpcomponents-httpclient.jar.path}" />
+		<pathelement location="${apache-httpcomponents-httpmime.jar.path}" />
+		<pathelement location="${junit4.jar.path}" />
+		<pathelement location="${javax-mail.jar.path}" />
+		<pathelement location="${gson.jar.path}" />
+		<pathelement location="${nashornsandbox.jar.path}" />
+		<pathelement location="${js-beautify.jar.path}" />
+	</path>
+
+	<!-- JAR files needed to execute the JUnit tests -->
+	<path id="common.test.classpath">
+		<pathelement location="${log4j-api.jar.path}" />
+		<pathelement location="${log4j-core.jar.path}" />
+		<pathelement location="${org.json.jar.path}" />
+		<pathelement location="${mongo-java-driver.jar.path}" />
+		<pathelement location="${morphia.jar.path}" />
+		<pathelement location="${apache-commons-codec.jar.path}" />
+		<pathelement location="${apache-commons-csv.jar.path}" />
+		<pathelement location="${apache-commons-lang3.jar.path}" />
+		<pathelement location="${nashornsandbox.jar.path}" />
+		<pathelement location="${js-beautify.jar.path}" />
+
+		<pathelement location="${junit4.jar.path}" />
+		<pathelement location="${hamcrest-core.jar.path}" />
+	</path>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="compile-common-java" depends="
+		finish-config,
+		create-build-dir">
+
+		<fail unless="build.time" message="Property not set: build.time" />
+		<fail unless="app.name" message="Property not set: app.name" />
+		<fail unless="app.version" message="Property not set: app.version" />
+		<fail unless="git.branch" message="Property not set: git.branch" />
+		<fail unless="git.commit.id" message="Property not set: git.commit.id" />
+		<fail unless="build.number" message="Property not set: build.number" />
+
+		<!-- verify all the lib files exist -->
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${log4j-api.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${log4j-core.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${org.json.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${mongo-java-driver.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${morphia.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-commons-codec.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-commons-csv.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-commons-math3.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-commons-lang3.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-httpcomponents-httpcore.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-httpcomponents-httpclient.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${apache-httpcomponents-httpmime.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${junit4.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${javax-mail.jar.path}" />
+		</antcall>
+
+		<!-- create the base directory -->
+		<property name="common.build.path" value="${build.path}/common" />
+		<mkdir dir="${common.build.path}" />
+
+		<!-- create the staging src directory -->
+		<property name="common.build.src.path" value="${common.build.path}/src" />
+		<mkdir dir="${common.build.src.path}" />
+
+		<!-- stage the java files into the build directory -->
+		<copy todir="${common.build.src.path}">
+			<fileset dir="${common.project.path}/src">
+				<include name="**/*.java" />
+			</fileset>
+		</copy>
+
+		<!-- make any changes needed to the staged files -->
+		<replaceregexp
+			file="${common.build.src.path}/com/imaginationsupport/AppInfo.java"
+			match="^\s*public static final String BUILD_TIME = &quot;.*&quot;;$"
+			replace="public static final String BUILD_TIME = &quot;${build.time}&quot;;"
+			byline="true"
+			flags="g" />
+		<replaceregexp
+			file="${common.build.src.path}/com/imaginationsupport/AppInfo.java"
+			match="^\s*public static final String APP_NAME = &quot;.*&quot;;$"
+			replace="public static final String APP_NAME = &quot;${app.name}&quot;;"
+			byline="true"
+			flags="g" />
+		<replaceregexp
+			file="${common.build.src.path}/com/imaginationsupport/AppInfo.java"
+			match="^\s*public static final String APP_VERSION = &quot;.*&quot;;$"
+			replace="public static final String APP_VERSION = &quot;${app.version}&quot;;"
+			byline="true"
+			flags="g" />
+		<replaceregexp
+			file="${common.build.src.path}/com/imaginationsupport/AppInfo.java"
+			match="^\s*public static final String GIT_BRANCH = &quot;.*&quot;;$"
+			replace="public static final String GIT_BRANCH = &quot;${git.branch}&quot;;"
+			byline="true"
+			flags="g" />
+		<replaceregexp
+			file="${common.build.src.path}/com/imaginationsupport/AppInfo.java"
+			match="^\s*public static final String GIT_COMMIT_ID = &quot;.*&quot;;$"
+			replace="public static final String GIT_COMMIT_ID = &quot;${git.commit.id}&quot;;"
+			byline="true"
+			flags="g" />
+		<replaceregexp
+			file="${common.build.src.path}/com/imaginationsupport/AppInfo.java"
+			match="^\s*public static final String BUILD_NUMBER = &quot;.*&quot;;$"
+			replace="public static final String BUILD_NUMBER = &quot;${build.number}&quot;;"
+			byline="true"
+			flags="g" />
+
+		<!-- create the staging test directory -->
+		<property name="common.build.test.path" value="${common.build.path}/test" />
+		<mkdir dir="${common.build.test.path}" />
+
+		<!-- stage the java files into the build directory -->
+		<copy todir="${common.build.test.path}">
+			<fileset dir="${common.project.path}/test">
+				<include name="**/*.java" />
+			</fileset>
+		</copy>
+
+		<!-- create the compiled code directory -->
+		<property name="common.build.classes.path" value="${common.build.path}/classes" />
+		<mkdir dir="${common.build.classes.path}" />
+
+		<!-- compile the updated java files -->
+		<javac destdir="${common.build.classes.path}" debug="true" target="${java.target.version}" source="${java.target.version}" includeAntRuntime="false">
+			<src path="${common.build.src.path}" />
+			<src path="${common.build.test.path}" />
+
+			<classpath refid="common.compile.classpath" />
+
+			<compilerarg value="-Xlint" />
+			<compilerarg value="-Xlint:-processing" />
+		</javac>
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="build-common-jar" depends="
+		finish-config,
+		compile-common-java,
+		create-output-dir">
+
+		<property name="common.jar.path" value="${output.path}/${common.jar.filename}" />
+
+		<fail unless="build.time" message="Property not set: build.time" />
+		<fail unless="app.name" message="Property not set: app.name" />
+		<fail unless="app.version" message="Property not set: app.version" />
+		<fail unless="git.branch" message="Property not set: git.branch" />
+		<fail unless="git.commit.id" message="Property not set: git.commit.id" />
+		<fail unless="build.number" message="Property not set: build.number" />
+
+		<!-- TODO move the test classes! -->
+
+		<jar destfile="${common.jar.path}" duplicate="fail">
+			<manifest>
+				<attribute name="Built-On" value="${build.time}" />
+				<attribute name="Created-By" value="${app.name} development team" />
+				<attribute name="Build-Version" value="${app.version} from ${git.branch} commit ${git.commit.id} - build ${build.number}" />
+			</manifest>
+
+			<fileset dir="${common.build.classes.path}" />
+		</jar>
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="test-common" depends="
+		compile-common-java,
+		create-output-dir">
+
+		<!-- TODO: junit 5 temporarily disabled -->
+
+		<!--<property name="common.test.output.path" value="${output.path}/common-tests" />-->
+		<!--<mkdir dir="${common.test.output.path}" />-->
+
+		<!--<fail message="Lib file missing: ${junit-platform-commons.jar.path}">-->
+		<!--<condition>-->
+		<!--<not>-->
+		<!--<available file="${junit-platform-commons.jar.path}" />-->
+		<!--</not>-->
+		<!--</condition>-->
+		<!--</fail>-->
+		<!--<fail message="Lib file missing: ${junit-platform-engine.jar.path}">-->
+		<!--<condition>-->
+		<!--<not>-->
+		<!--<available file="${junit-platform-engine.jar.path}" />-->
+		<!--</not>-->
+		<!--</condition>-->
+		<!--</fail>-->
+		<!--<fail message="Lib file missing: ${junit-platform-launcher.jar.path}">-->
+		<!--<condition>-->
+		<!--<not>-->
+		<!--<available file="${junit-platform-launcher.jar.path}" />-->
+		<!--</not>-->
+		<!--</condition>-->
+		<!--</fail>-->
+
+		<!--<junitlauncher>-->
+		<!--<classpath>-->
+		<!--<pathelement location="${junit-platform-launcher.jar.path}" />-->
+		<!--</classpath>-->
+		<!--&lt;!&ndash;<classpath refid="common.test.classpath" />&ndash;&gt;-->
+
+		<!--<testclasses outputdir="${common.test.output.path}">-->
+		<!--<fileset dir="${common.build.classes.path}">-->
+		<!--<include name="test/**" />-->
+		<!--</fileset>-->
+		<!--</testclasses>-->
+		<!--</junitlauncher>-->
+
+		<!-- junit4 -->
+
+		<!-- verify all the lib files exist -->
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${junit4.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${hamcrest-core.jar.path}" />
+		</antcall>
+
+		<property name="common.test.output.path" value="${build.path}/common-tests" />
+		<mkdir dir="${common.test.output.path}" />
+
+		<!-- empty any text already in the log file -->
+		<echo message="Cleaning log file: ${junit.log.path}" />
+		<echo file="${junit.log.path}" />
+
+		<junit haltonfailure="no" fork="true" dir="${junit.working.dir.path}">
+
+			<!--<sysproperty key="log4j2.debug" value="true" />-->
+			<sysproperty key="log4j.configurationFile" value="${junit.working.dir.path}/log4j2.xml" />
+
+			<classpath>
+				<path refid="common.test.classpath" />
+				<!--<pathelement location="${web.build.classes.path}" />-->
+				<pathelement location="${common.build.classes.path}" />
+			</classpath>
+
+			<formatter type="brief" usefile="false" />
+			<formatter type="xml" usefile="true" />
+
+			<batchtest todir="${common.test.output.path}">
+				<fileset dir="${common.build.test.path}" includes="**/Test*.java" />
+			</batchtest>
+
+		</junit>
+
+		<!-- copy the log file to the build output directory -->
+		<copy file="${junit.log.path}" todir="${common.test.output.path}" />
+
+		<property name="junitreport.working.path" value="${build.path}/common-junitreport-working" />
+		<mkdir dir="${junitreport.working.path}" />
+
+		<property name="junitreport.output.path" value="${output.path}/common-junitreport" />
+		<mkdir dir="${junitreport.output.path}" />
+
+		<junitreport todir="${junitreport.working.path}">
+
+			<fileset dir="${common.test.output.path}">
+				<include name="TEST-*.xml" />
+			</fileset>
+
+			<report format="noframes" styledir="${junit-report.config.path}" todir="${junitreport.output.path}" />
+
+		</junitreport>
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+</project>

@@ -1,0 +1,96 @@
+# 1 - install docker and docker-compose
+
+	https://docs.docker.com/v17.09/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce-1
+
+	sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+    sudo curl -L https://raw.githubusercontent.com/docker/compose/1.21.2/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose
+
+# 2 - switch to separate docker data dir on aws volume and set up the environment
+
+	# switch to /docker-data/docker (see other doc)
+
+	sudo mkdir -p /docker-data/volumes \
+		&& sudo mkdir -p /docker-data/volumes/reverse-proxy-certbot \
+		&& sudo mkdir -p /docker-data/volumes/reverse-proxy-certs \
+		&& sudo mkdir -p /docker-data/volumes/teamcity-server-data \
+		&& sudo mkdir -p /docker-data/volumes/teamcity-server-logs \
+		&& sudo mkdir -p /docker-data/volumes/teamcity-agent-0-data \
+		&& sudo mkdir -p /docker-data/volumes/teamcity-agent-1-data
+
+	add to ~/.bashrc:
+		alias dc="docker-compose -p scenarioexplorer -f docker-compose-support.yaml -f docker-compose-clusters.yaml"
+
+# 3 - install the AWS ECR credential helper
+
+	mkdir -p ~/.docker
+	echo "{\"credHelpers\":{\"660195182610.dkr.ecr.us-east-1.amazonaws.com\": \"ecr-login\"}}" > ~/.docker/config.json
+	chmod 700 ~/.docker
+	chmod 600 ~/.docker/config.json
+	sudo cp docker-credential-ecr-login /usr/local/bin && sudo chmod 755 /usr/local/bin/docker-credential-ecr-login
+
+# 4 - pull all the images
+
+	dc pull
+
+# 5 - start the reverse proxy and set up https
+
+	# comment out all 'depends_on' entries in the reverse proxy except for the teamcity-server
+
+	dc up -d reverse-proxy teamcity-server teamcity-database dev-console
+	docker exec -t reverse-proxy mkdir -p /var/www/letsencrypt
+	docker exec -t reverse-proxy openssl dhparam -out /etc/letsencrypt/dhparam.pem 2048
+	docker exec -t reverse-proxy certbot certonly --webroot -w /var/www/letsencrypt -d dev.imaginationsupport.com --agree-tos -m mlyle@ara.com
+	docker exec -t reverse-proxy certbot certonly --webroot -w /var/www/letsencrypt -d build.imaginationsupport.com
+
+	docker exec -t reverse-proxy certbot certonly --webroot -w /var/www/letsencrypt -d ncsu-dev.imaginationsupport.com
+
+	docker exec -t reverse-proxy certbot certonly --webroot -w /var/www/letsencrypt -d demo.imaginationsupport.com
+	docker exec -t reverse-proxy certbot certonly --webroot -w /var/www/letsencrypt -d ncsu.imaginationsupport.com
+
+# 6 - update the reverse proxy for teamcity
+
+	docker cp reverse-proxy/aws-only-teamcity.conf.tmpl reverse-proxy:/docker/nginx.conf.tmpl && docker exec -t reverse-proxy /reload-nginx-config.sh
+
+# 7 - set up the teamcity database
+
+	# log in to build.imaginationsupport.com and once on the database screen...
+
+	docker exec -it -u postgres teamcity-database /scripts/run-create-database.sh
+	docker cp teamcity-server/postgresql-42.2.2.jar teamcity-server:/data/teamcity_server/datadir/lib/jdbc
+
+	# finish the config...
+
+# 8 - add the agents
+
+	dc up -d teamcity-agent-0 teamcity-agent-1
+
+# 9 - start the ARA dev cluster
+
+	# make sure the environment file env/aws-ara-dev.env is included in the dev console instance
+	dc up -d dev-console
+
+	dc up -d ldap-ara-dev
+	docker exec -t dev-console bash -c "ldapmodify -x -D \${SE_LDAP_ROOT_DN} -w \${SE_LDAP_ROOT_PW} -H ldap://ldap-ara-dev -f /imaginationsupport/ldap/initial-setup.ldif -c"
+	docker exec -t dev-console bash -c "ldapmodify -x -D \${SE_LDAP_ROOT_DN} -w \${SE_LDAP_ROOT_PW} -H ldap://ldap-ara-dev -f /imaginationsupport/ldap/add-users.ldif -c"
+
+	dc up -d web-ui-ara-dev
+	docker cp reverse-proxy/aws-full.conf.tmpl reverse-proxy:/docker/nginx.conf.tmpl && docker exec -t reverse-proxy /reload-nginx-config.sh
+
+# 98
+
+	# renew certs
+	docker exec -it reverse-proxy certbot renew
+
+	# might need this instead
+	docker exec -it reverse-proxy certbot renew --force-renewal
+	
+	# then
+	docker exec -t reverse-proxy /reload-nginx-config.sh
+
+
+# 99
+	debug web ui:
+		docker exec -t web-ui-ara-dev ls -lahF /usr/local/tomcat/logs
+		docker exec -t web-ui-ara-dev cat /usr/local/tomcat/logs/catalina.2018-07-03.log
+		docker exec -t web-ui-ara-dev cat /usr/local/tomcat/logs/imagination-support-web.log

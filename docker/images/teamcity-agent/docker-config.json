@@ -1,0 +1,8 @@
+{
+  "HttpHeaders": {
+	"User-Agent": "Docker-Client/18.03.1-ce (linux)"
+  },
+  "credHelpers": {
+	"660195182610.dkr.ecr.us-east-1.amazonaws.com": "ecr-login"
+  }
+}

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn">
+
+	<Properties>
+		<Property name="log-path">${sys:catalina.base}/logs</Property>
+	</Properties>
+
+	<Appenders>
+
+		<Console name="console.appender" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level %file(%line) - %msg%n" />
+		</Console>
+
+		<RollingFile name="web.appender" fileName="${log-path}/imagination-support-web.log" filePattern="${log-path}/imagination-support-web-%i.log.gz">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level %file(%line) - %msg%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+		</RollingFile>
+
+		<RollingFile name="backend.appender" fileName="${log-path}/imagination-support-backend.log" filePattern="${log-path}/imagination-support-backend-%i.log.gz">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level %file(%line) - %msg%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+		</RollingFile>
+
+		<RollingFile name="mail.appender" fileName="${log-path}/imagination-support-mail.log" filePattern="${log-path}/imagination-support-mail-%i.log.gz">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level %file(%line) - %msg%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+		</RollingFile>
+
+	</Appenders>
+
+	<Loggers>
+
+		<Logger name="web.logger" level="debug" additivity="false">
+			<AppenderRef ref="web.appender" level="debug" />
+		</Logger>
+
+		<Logger name="backend.logger" level="debug" additivity="false">
+			<AppenderRef ref="backend.appender" level="debug" />
+		</Logger>
+
+		<Logger name="mail.logger" level="info" additivity="false">
+			<AppenderRef ref="mail.appender" level="debug" />
+		</Logger>
+
+		<Logger name="console.logger" level="info" additivity="false">
+			<AppenderRef ref="console.appender" level="debug" />
+		</Logger>
+
+		<Root level="info">
+			<AppenderRef ref="console.appender" />
+		</Root>
+	</Loggers>
+
+</Configuration>

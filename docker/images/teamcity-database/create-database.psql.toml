@@ -1,0 +1,4 @@
+[template]
+src = "create-database.psql.tmpl"
+dest = "/scripts/create-database.psql"
+owner = 'postgres'

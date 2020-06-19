@@ -1,0 +1,119 @@
+version: '3'
+services:
+
+########################################################################################################################
+
+  reverse-proxy:
+    image: imaginationsupport/reverse-proxy
+    container_name: reverse-proxy
+    restart: always
+    depends_on:
+      - web-ui
+    ports:
+      - "80:80"
+    volumes:
+      - ../../../logs/reverse-proxy:/var/log/nginx
+    networks:
+      - imaginationsupport
+
+########################################################################################################################
+
+  ldap:
+    image: imaginationsupport/ldap
+    container_name: ldap
+    restart: always
+    ports:
+      - "389:389"
+    volumes:
+      - ldap-config:/etc/openldap-dist
+      - ldap-data:/var/lib/openldap
+    env_file:
+      - localdev-ara.env
+      - localdev-aws-credentials.env
+#    environment:
+#      - USE_LDAP_LOGGING=true
+    networks:
+      - imaginationsupport
+
+########################################################################################################################
+
+  web-ui:
+    image: imaginationsupport/web-ui-ara
+#    image: imaginationsupport/web-ui-ncsu
+    container_name: web-ui
+    restart: always
+    ports:
+      - "8080:8080" # HTTP
+      - "9090:9090" # JDPA (tomcat debugging)
+    depends_on:
+      - ldap
+      - mongo-db
+    volumes:
+      - ../../../logs/web-ui:/usr/local/tomcat/logs
+    env_file:
+      - localdev-ara.env
+#      - localdev-ncsu.env
+    environment:
+      - USE_TOMCAT_DEBUGGING=true
+    networks:
+      - imaginationsupport
+
+########################################################################################################################
+
+  mongo-db:
+    image: imaginationsupport/mongo-db
+    container_name: mongo-db
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-db-ara-data:/data/db
+    env_file:
+      - localdev-ara.env
+      - localdev-aws-credentials.env
+    networks:
+      - imaginationsupport
+
+########################################################################################################################
+
+  swagger-ui:
+    image: imaginationsupport/swagger-ui
+    container_name: swagger-ui
+    restart: always
+    environment:
+      - API_URL=/scenarioexplorer/swagger-v2.yaml
+    depends_on:
+      - web-ui
+    networks:
+      - imaginationsupport
+
+########################################################################################################################
+
+  dev-console:
+    image: imaginationsupport/dev-console
+    container_name: dev-console
+    restart: always
+    volumes:
+      - ../../..:/imaginationsupport
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file:
+      - localdev-ara.env
+      - localdev-aws-credentials.env
+    networks:
+      - imaginationsupport
+
+########################################################################################################################
+
+networks:
+  imaginationsupport:
+
+########################################################################################################################
+
+volumes:
+  ldap-config:
+  ldap-data:
+  mongo-db-ara-data:
+  mongo-db-ncsu-data:
+  reverse-proxy-config:
+
+########################################################################################################################

@@ -1,0 +1,22 @@
+<div class="container{{css classes}}" id="{{id}}">
+	<div class="card mt-2">
+		<div class="card-header bg-dark text-light h4">
+			<span id="page-header" class="align-middle">{{title}}</span>
+			<div class="float-right">{{buttons}}</div>
+		</div>
+
+		{{body}}
+
+	</div>
+</div>
+<div class="container d-none" id="error-display">
+	<div class="card mt-2 border-danger">
+		<div class="card-header bg-danger text-light h4">
+			<span class="align-middle">Error!</span>
+		</div>
+		<div class="card-body">
+			<div id="error-message"></div>
+			<pre id="error-exception-stacktrace" class="border rounded border-danger p-2 mt-3"></pre>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,35 @@
+####################################################################################################################################################################################
+# make sure the base DC is create
+
+dn: dc=imaginationsupport,dc=com
+changetype: add
+objectClass: dcObject
+objectClass: organization
+dc: imaginationsupport
+description: imaginationsupport test environment
+o: imaginationsupport test environment
+
+####################################################################################################################################################################################
+# create the 'people' org
+
+dn: ou=people,dc=imaginationsupport,dc=com
+changetype: delete
+
+dn: ou=people,dc=imaginationsupport,dc=com
+changetype: add
+objectClass: organizationalUnit
+ou: people
+description: Normal users
+
+####################################################################################################################################################################################
+# create the 'groups' org
+
+dn: ou=groups,dc=imaginationsupport,dc=com
+changetype: delete
+
+dn: ou=groups,dc=imaginationsupport,dc=com
+changetype: add
+objectClass: organizationalUnit
+ou: groups
+
+####################################################################################################################################################################################

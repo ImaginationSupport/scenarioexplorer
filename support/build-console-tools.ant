@@ -1,0 +1,132 @@
+<project name="LAS - Scenario Explorer - Console Tools">
+
+	<path id="console-tools.compile.classpath">
+		<pathelement location="${log4j-api.jar.path}" />
+		<pathelement location="${log4j-core.jar.path}" />
+	</path>
+
+	<path id="console-tools.run-generate-api-docs.classpath">
+		<pathelement location="${log4j-api.jar.path}" />
+		<pathelement location="${log4j-core.jar.path}" />
+		<pathelement location="${org.json.jar.path}" />
+		<pathelement location="${mongo-java-driver.jar.path}" />
+		<pathelement location="${apache-commons-math3.jar.path}" />
+		<pathelement location="${apache-httpcomponents-httpcore.jar.path}" />
+		<pathelement location="${apache-httpcomponents-httpclient.jar.path}" />
+		<pathelement location="${javax-mail.jar.path}" />
+		<pathelement location="${morphia.jar.path}" />
+		<pathelement location="${nashornsandbox.jar.path}" />
+	</path>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="compile-console-tools-java" depends="
+		finish-config,
+		create-build-dir,
+		build-common-jar">
+
+		<!-- verify all the lib files exist -->
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${log4j-api.jar.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${log4j-core.jar.path}" />
+		</antcall>
+
+		<!-- create the base directory -->
+		<property name="console-tools.build.path" value="${build.path}/console-tools" />
+		<mkdir dir="${console-tools.build.path}" />
+
+		<!-- create the staging src directory -->
+		<property name="console-tools.build.src.path" value="${console-tools.build.path}/src" />
+		<mkdir dir="${console-tools.build.src.path}" />
+
+		<!-- stage the java files into the build directory -->
+		<copy todir="${console-tools.build.src.path}">
+			<fileset dir="${console-tools.project.path}/src">
+				<include name="**/*.java" />
+			</fileset>
+			<fileset dir="${web-ui.project.path}/src">
+				<include name="**/*.java" />
+			</fileset>
+			<fileset dir="${web-common.project.path}/src">
+				<include name="**/*.java" />
+			</fileset>
+		</copy>
+
+		<!-- make any changes needed to the staged files -->
+		<!-- TODO anything? -->
+
+		<!-- create the compiled code directory -->
+		<property name="console-tools.build.classes.path" value="${console-tools.build.path}/classes" />
+		<mkdir dir="${console-tools.build.classes.path}" />
+
+		<!-- compile the updated java files -->
+		<javac destdir="${console-tools.build.classes.path}" debug="true" target="${java.target.version}" source="${java.target.version}" includeAntRuntime="false">
+			<src path="${console-tools.build.src.path}" />
+
+			<classpath refid="console-tools.compile.classpath" />
+			<classpath refid="web-ui.compile.classpath" />
+			<classpath location="${common.jar.path}" />
+
+			<compilerarg value="-Xlint" />
+			<compilerarg value="-Xlint:-processing" />
+		</javac>
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="generate-swagger-v2" depends="
+		finish-config,
+		compile-console-tools-java,
+		create-output-dir">
+
+		<property name="swagger-v2.path" value="${output.path}/${swagger-v2.filename}" />
+
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${console-tools.build.classes.path}" />
+		</antcall>
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${common.jar.path}" />
+		</antcall>
+
+		<java className="com.imaginationsupport.GenerateApiDocumentation" fork="true" dir="${console-tools.working-dir.project.path}" failonerror="true">
+			<arg value="-v2" />
+			<arg value="${swagger-v2.path}" />
+
+			<classpath>
+				<pathelement location="${console-tools.build.classes.path}" />
+				<path refid="console-tools.run-generate-api-docs.classpath" />
+				<pathelement location="${common.jar.path}" />
+			</classpath>
+		</java>
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="generate-openapi-v3" depends="
+		finish-config,
+		compile-console-tools-java,
+		create-output-dir">
+
+		<property name="openapi-v3.path" value="${output.path}/${openapi-v3.filename}" />
+
+		<java className="com.imaginationsupport.GenerateApiDocumentation" fork="true" dir="${console-tools.working-dir.project.path}">
+
+			<arg value="-v3" />
+			<arg value="${openapi-v3.path}" />
+
+			<classpath>
+				<pathelement location="${console-tools.build.classes.path}" />
+				<path refid="web-ui.compile.classpath" />
+				<pathelement location="${common.jar.path}" />
+			</classpath>
+		</java>
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+</project>

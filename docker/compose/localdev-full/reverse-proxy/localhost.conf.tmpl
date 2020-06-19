@@ -1,0 +1,59 @@
+worker_processes 1;
+
+events
+{
+	worker_connections  1024;
+}
+
+http
+{
+	client_max_body_size   0;
+
+	# this is the internal Docker DNS
+	resolver 127.0.0.11;
+
+#	log_format upstreamlog '$time_local | $status | TO: $upstream_addr | $request';
+#	access_log  /var/log/nginx/access2.log upstreamlog;
+
+	map $http_upgrade $connection_upgrade
+	{
+		# WebSocket support
+		default upgrade;
+		'' '';
+	}
+
+	####################################################################################################
+
+	server
+	{
+		listen 80 default_server;
+
+		# use these variables instead of inline below so that nginx will start even if these containers are down
+		set $web_ui web-ui:8080;
+		set $web_user_support web-user-support:8080;
+		set $swagger_ui swagger-ui:8080;
+
+		proxy_intercept_errors on;
+		proxy_connect_timeout 5;
+		proxy_read_timeout 240;
+
+		location /
+		{
+			proxy_pass http://$web_ui;
+		}
+
+		location /user-support/
+		{
+			proxy_pass http://$web_user_support;
+		}
+
+		location ~ ^/swagger(/?)(.*)
+		{
+			proxy_pass          http://$swagger_ui/$2;
+		}
+
+		include error-pages.conf;
+	}
+
+	####################################################################################################
+}

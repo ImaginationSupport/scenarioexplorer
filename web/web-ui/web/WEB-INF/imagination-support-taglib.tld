@@ -1,0 +1,473 @@
+<taglib>
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>2.0</jsp-version>
+	<short-name>Imagination Support TagLib</short-name>
+
+	<!--
+	#######################################################################################################################################
+	# Header controls
+	#######################################################################################################################################
+	-->
+
+	<tag>
+		<name>head</name>
+		<tag-class>com.imaginationsupport.web.taglib.Head</tag-class>
+		<body-content>empty</body-content>
+
+		<attribute>
+			<name>minimalJS</name>
+			<description>True to only include the minimal JS files</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>pageJavaScriptPath</name>
+			<description>The path to the page javascript file</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>datePicker</name>
+			<description>True if this page needs the date picker library</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>colorPicker</name>
+			<description>True if this page needs the color picker library</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>slider</name>
+			<description>True if this page needs the slider library</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>datatables</name>
+			<description>True if this page needs the datatables library</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>plugins</name>
+			<description>True if this page needs the plugins library</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>viewCanvas</name>
+			<description>True if this page needs the view canvas library</description>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>pageheader</name>
+		<tag-class>com.imaginationsupport.web.taglib.PageHeader</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+
+	<tag>
+		<name>breadcrumbs</name>
+		<tag-class>com.imaginationsupport.web.taglib.BreadCrumbs</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+
+	<!--
+	#######################################################################################################################################
+	# Body content
+	#######################################################################################################################################
+	-->
+
+	<tag>
+		<name>maincontent</name>
+		<tag-class>com.imaginationsupport.web.taglib.MainContent</tag-class>
+		<body-content>scriptless</body-content>
+
+		<attribute>
+			<name>id</name>
+			<description>The DOM id</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>title</name>
+			<description>The title of the section</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>cssClasses</name>
+			<description>Additional CSS classes to add</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>saveId</name>
+			<description>The DOM id of the save button</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>saveLabel</name>
+			<description>The label of the save button</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>cancelId</name>
+			<description>The DOM id of the save button</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>cancelLabel</name>
+			<description>The label of the cancel button</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>deleteId</name>
+			<description>The DOM id of the delete button</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>deleteLabel</name>
+			<description>The label of the delete button</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>newId</name>
+			<description>The DOM id of the new button</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>newLabel</name>
+			<description>The label of the new button</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>exportId</name>
+			<description>The DOM id of the export button</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>exportLabel</name>
+			<description>The label of the export button</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>importId</name>
+			<description>The DOM id of the import button</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>importLabel</name>
+			<description>The label of the import button</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>maincontentwithleftsidebar</name>
+		<tag-class>com.imaginationsupport.web.taglib.MainContentWithLeftSideBar</tag-class>
+		<body-content>scriptless</body-content>
+
+		<attribute>
+			<name>workingEntriesHolderId</name>
+			<description>The DOM id of the working entries holder</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>workingEntriesId</name>
+			<description>The DOM id of the working entries</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>maincontentsection</name>
+		<tag-class>com.imaginationsupport.web.taglib.MainContentSection</tag-class>
+		<body-content>scriptless</body-content>
+
+		<attribute>
+			<name>id</name>
+			<description>The DOM id of the section</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>cssClasses</name>
+			<description>The CSS class(es) to add</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<!--
+	#######################################################################################################################################
+	# Normal Controls
+	#######################################################################################################################################
+	-->
+
+	<tag>
+		<name>button</name>
+		<tag-class>com.imaginationsupport.web.taglib.Button</tag-class>
+		<body-content>empty</body-content>
+
+		<attribute>
+			<name>id</name>
+			<description>The DOM id</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>cssClasses</name>
+			<description>The space-separated CSS class(es)</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>fontAwesomeIconClassName</name>
+			<description>The space-separated FontAwesome icon class name</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>text</name>
+			<description>The text to display inside the button</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>datepicker</name>
+		<tag-class>com.imaginationsupport.web.taglib.DatePicker</tag-class>
+		<body-content>empty</body-content>
+
+		<attribute>
+			<name>id</name>
+			<description>The DOM id</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<!--
+	#######################################################################################################################################
+	# Collapsible Section
+	#######################################################################################################################################
+	-->
+
+	<tag>
+		<name>collapsiblesection</name>
+		<tag-class>com.imaginationsupport.web.taglib.CollapsibleSection</tag-class>
+		<body-content>scriptless</body-content>
+
+		<attribute>
+			<name>title</name>
+			<description>The text to use the the header</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>bodyId</name>
+			<description>The DOM id of the body element</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>headerCssClasses</name>
+			<description>The space-separated CSS class(es) for the header</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>bodyCssClasses</name>
+			<description>The space-separated CSS class(es) for the body</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>initiallyExpanded</name>
+			<description>True if the collapsible section is initially expanded</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<!--
+	#######################################################################################################################################
+	# Accordions
+	#######################################################################################################################################
+	-->
+
+	<tag>
+		<name>accordionholder</name>
+		<tag-class>com.imaginationsupport.web.taglib.AccordionHolder</tag-class>
+		<body-content>scriptless</body-content>
+
+		<attribute>
+			<name>id</name>
+			<description>The DOM id</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>accordion</name>
+		<tag-class>com.imaginationsupport.web.taglib.Accordion</tag-class>
+		<body-content>scriptless</body-content>
+
+		<attribute>
+			<name>idSuffix</name>
+			<description>The DOM id suffix</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>title</name>
+			<description>The title to display</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>parentId</name>
+			<description>The accordion parent DOM id</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>expanded</name>
+			<description>True if the accordion should be initially expanded</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<!--
+	#######################################################################################################################################
+	# Sidebar
+	#######################################################################################################################################
+	-->
+
+	<tag>
+		<name>sidebar</name>
+		<tag-class>com.imaginationsupport.web.taglib.SideBar</tag-class>
+		<body-content>scriptless</body-content>
+
+		<attribute>
+			<name>notifications</name>
+			<description>True to show the notifications sidebar, false otherwise</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>helpbubble</name>
+		<tag-class>com.imaginationsupport.web.taglib.HelpBubble</tag-class>
+		<body-content>empty</body-content>
+
+		<attribute>
+			<name>hoverPopup</name>
+			<description>The text to show in the help popup</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<!--<attribute>-->
+		<!--<name>href</name>-->
+		<!--<description>The url to the help page</description>-->
+		<!--<required>true</required>-->
+		<!--<rtexprvalue>true</rtexprvalue>-->
+		<!--</attribute>-->
+	</tag>
+
+	<tag>
+		<name>helpsidebarentry</name>
+		<tag-class>com.imaginationsupport.web.taglib.HelpSideBarEntry</tag-class>
+		<body-content>scriptless</body-content>
+
+		<attribute>
+			<name>title</name>
+			<description>The title of the entry</description>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>helpsidebarshowmore</name>
+		<tag-class>com.imaginationsupport.web.taglib.HelpSideBarShowMore</tag-class>
+		<body-content>scriptless</body-content>
+	</tag>
+
+	<tag>
+		<name>helptip</name>
+		<tag-class>com.imaginationsupport.web.taglib.HelpTip</tag-class>
+		<body-content>scriptless</body-content>
+
+		<attribute>
+			<name>intro</name>
+			<description>The intro text to use instead of the default</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>iconClasses</name>
+			<description>The Font Awesome icon classes to use instead of the default</description>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+</taglib>

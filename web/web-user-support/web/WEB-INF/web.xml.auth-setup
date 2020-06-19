@@ -1,0 +1,47 @@
+<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Scenario Explorer</web-resource-name>
+
+			<!--
+				Not secured:
+				
+				/index.jsp
+				/change-password.jsp
+				/change-password-success.jsp
+				/reset-password.jsp
+				/reset-password-success.jsp
+			-->
+
+			<url-pattern>/ldap-admin.jsp</url-pattern>
+
+		</web-resource-collection>
+
+		<auth-constraint>
+			<!--<role-name>{{ldap.group.name}}</role-name>-->
+			<role-name>*</role-name>
+		</auth-constraint>
+
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<form-login-config>
+			<form-login-page>/login.jsp</form-login-page>
+			<form-error-page>/login.jsp</form-error-page>
+		</form-login-config>
+	</login-config>
+
+	<!-- use this to just check if they exist in LDAP and leave authorization to the app -->
+	<security-role>
+		<description>Authenticated Scenario Explorer user</description>
+		<role-name>*</role-name>
+	</security-role>
+
+	<!-- use this if there is a named group in LDAP we want to use to check for authorization -->
+	<!--<security-role>-->
+	<!--<description>Authenticated Scenario Explorer user</description>-->
+	<!--<role-name>{{ldap.group.name}}</role-name>-->
+	<!--</security-role>-->

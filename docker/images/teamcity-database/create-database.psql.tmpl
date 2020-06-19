@@ -1,0 +1,10 @@
+DROP DATABASE IF EXISTS {{getenv "SE_TEAMCITY_DATABASE"}};
+DROP USER IF EXISTS {{getenv "SE_TEAMCITY_USERNAME"}};
+
+CREATE USER {{getenv "SE_TEAMCITY_USERNAME"}} WITH LOGIN ENCRYPTED PASSWORD '{{getenv "SE_TEAMCITY_PASSWORD"}}';
+
+CREATE DATABASE {{getenv "SE_TEAMCITY_DATABASE"}} WITH OWNER {{getenv "SE_TEAMCITY_USERNAME"}};
+
+-- max_wal_size = 1500MB
+-- checkpoint_completion_target=0.9
+-- synchronous_commit=off

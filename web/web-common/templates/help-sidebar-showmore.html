@@ -1,0 +1,5 @@
+<div id="{{showmoreId}}" class="clickable text-primary" onclick="$('#{{showmoreId}}').hide();$('#{{showlessId}}').removeClass('d-none').show();$('#{{bodyId}}').removeClass('d-none').show();">Show More</div>
+<div id="{{showlessId}}" class="clickable d-none text-primary" onclick="$('#{{showmoreId}}').show();$('#{{showlessId}}').hide();$('#{{bodyId}}').hide();">Show Less</div>
+	<div id="{{bodyId}}" class="d-none">
+		{{body}}
+	</div>

@@ -1,0 +1,126 @@
+version: '3'
+
+####################################################################################################################################################################################
+
+networks:
+  imaginationsupport:
+
+####################################################################################################################################################################################
+
+services:
+
+##########################################################################################
+
+  reverse-proxy:
+    image: 660195182610.dkr.ecr.us-east-1.amazonaws.com/reverse-proxy:prod
+    container_name: reverse-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - teamcity-server
+      - web-ui-demo
+      - web-ui-ncsu
+      - web-ui-ara-dev
+      - web-ui-ncsu-dev
+    volumes:
+       - /docker-data/volumes/reverse-proxy-certs:/etc/letsencrypt
+       - /docker-data/volumes/reverse-proxy-certbot:/var/www/letsencrypt
+       - /docker-data/volumes/reverse-proxy-logs:/var/log/nginx
+#    environment:
+#      - USE_EMERGENCY_MODE=true
+    networks:
+      - imaginationsupport
+
+##########################################################################################
+
+  teamcity-server:
+    image: jetbrains/teamcity-server
+    container_name: teamcity-server
+    restart: always
+    depends_on:
+      - teamcity-database
+    volumes:
+      - /docker-data/volumes/teamcity-server-data:/data/teamcity_server/datadir
+      - /docker-data/volumes/teamcity-server-logs:/opt/teamcity/logs
+    env_file:
+      - env/aws-teamcity-server.env
+    networks:
+      - imaginationsupport
+
+##########################################################################################
+
+  teamcity-agent-0:
+    image: 660195182610.dkr.ecr.us-east-1.amazonaws.com/teamcity-agent:prod
+    container_name: teamcity-agent-0
+    restart: always
+    depends_on:
+      - teamcity-server
+      - teamcity-database
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /docker-data/volumes/teamcity-agent-0-data:/data/teamcity_agent/conf
+    env_file:
+      - env/aws-teamcity-agent.env
+    networks:
+      - imaginationsupport
+    privileged: true
+    environment:
+      - DOCKER_IN_DOCKER=start
+
+##########################################################################################
+
+  teamcity-agent-1:
+    image: 660195182610.dkr.ecr.us-east-1.amazonaws.com/teamcity-agent:prod
+    container_name: teamcity-agent-1
+    restart: always
+    depends_on:
+      - teamcity-server
+      - teamcity-database
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /docker-data/volumes/teamcity-agent-1-data:/data/teamcity_agent/conf
+    env_file:
+      - env/aws-teamcity-agent.env
+    networks:
+      - imaginationsupport
+    privileged: true
+    environment:
+      - DOCKER_IN_DOCKER=start
+
+##########################################################################################
+
+  teamcity-database:
+    image: 660195182610.dkr.ecr.us-east-1.amazonaws.com/teamcity-database:prod
+    container_name: teamcity-database
+    restart: always
+    volumes:
+      - teamcity-database-data:/var/lib/postgresql/data
+    env_file:
+      - env/aws-teamcity-database.env
+    networks:
+      - imaginationsupport
+
+##########################################################################################
+
+  dev-console:
+    image: 660195182610.dkr.ecr.us-east-1.amazonaws.com/dev-console:prod
+    container_name: dev-console
+    restart: always
+    volumes:
+      - .:/imaginationsupport
+    env_file:
+      - env/aws-ara-dev.env
+#      - env/aws-ncsu-dev.env
+#      - env/aws-demo.env
+#      - env/aws-ncsu.env
+    networks:
+      - imaginationsupport
+
+####################################################################################################################################################################################
+
+volumes:
+  teamcity-database-data:
+
+####################################################################################################################################################################################

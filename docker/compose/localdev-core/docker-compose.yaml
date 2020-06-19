@@ -1,0 +1,81 @@
+version: '3'
+services:
+
+########################################################################################################################
+
+  ldap:
+    image: 660195182610.dkr.ecr.us-east-1.amazonaws.com/ldap:dev
+    container_name: ldap
+    restart: always
+#    ports:
+#      - "389:389"
+    volumes:
+      - ldap-config:/etc/openldap-dist
+      - ldap-data:/var/lib/openldap
+    env_file:
+      - localdev-ara.env
+    networks:
+      - imaginationsupport
+
+########################################################################################################################
+
+  web-ui:
+    image: 660195182610.dkr.ecr.us-east-1.amazonaws.com/web-ui-ara:dev
+    container_name: web-ui
+    restart: always
+    ports:
+      - "80:8080"
+    depends_on:
+      - ldap
+      - mongo-db
+    volumes:
+      - ../../../logs/web-ui:/usr/local/tomcat/logs
+    env_file:
+      - localdev-ara.env
+    networks:
+      - imaginationsupport
+
+########################################################################################################################
+
+  mongo-db:
+    image: 660195182610.dkr.ecr.us-east-1.amazonaws.com/mongo-db:dev
+    container_name: mongo-db
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-db-ara-data:/data/db
+    env_file:
+      - localdev-ara.env
+    networks:
+      - imaginationsupport
+
+########################################################################################################################
+
+  dev-console:
+    image: 660195182610.dkr.ecr.us-east-1.amazonaws.com/dev-console:dev
+    container_name: dev-console
+    restart: always
+    volumes:
+      - ../../..:/imaginationsupport
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file:
+      - localdev-ara.env
+    networks:
+      - imaginationsupport
+
+########################################################################################################################
+
+networks:
+  imaginationsupport:
+
+########################################################################################################################
+
+volumes:
+  ldap-config:
+  ldap-data:
+  mongo-db-ara-data:
+  mongo-db-ncsu-data:
+  reverse-proxy-config:
+
+########################################################################################################################

@@ -1,0 +1,55 @@
+# ====================================================================================================
+# clean the normal user if it exists
+
+dn: uid=normaluser,ou=people,dc=imaginationsupport,dc=com
+changetype: delete
+
+# ====================================================================================================
+# add the normal user
+
+dn: uid=normaluser,ou=people,dc=imaginationsupport,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: Normal User
+sn: normaluser
+userpassword: password
+mail: noreply@imaginationsupport.com
+displayName: Normal User
+
+# ====================================================================================================
+# clean the normal user if it exists
+
+dn: uid=anotheruser,ou=people,dc=imaginationsupport,dc=com
+changetype: delete
+
+# ====================================================================================================
+# add the normal user
+
+dn: uid=anotheruser,ou=people,dc=imaginationsupport,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: Another User
+sn: anotheruser
+userpassword: password
+mail: noreply@imaginationsupport.com
+displayName: Another User
+
+# ====================================================================================================
+# clean the admin user if it exists
+
+dn: uid=adminuser,ou=people,dc=imaginationsupport,dc=com
+changetype: delete
+
+# ====================================================================================================
+# create the admin user
+
+dn: uid=adminuser,ou=people,dc=imaginationsupport,dc=com
+changetype: add
+objectclass: inetOrgPerson
+cn: Admin User
+sn: adminuser
+userpassword: password
+mail: noreply@imaginationsupport.com
+displayName: Admin User
+
+# ====================================================================================================

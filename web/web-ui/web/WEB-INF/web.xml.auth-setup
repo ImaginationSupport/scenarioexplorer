@@ -1,0 +1,56 @@
+<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Scenario Explorer</web-resource-name>
+
+			<!--
+				Not secured:
+				
+				/about.jsp
+				/help.jsp
+			-->
+
+			<url-pattern>/conditioning-event-create-update.jsp</url-pattern>
+			<url-pattern>/index.jsp</url-pattern>
+			<url-pattern>/project-access.jsp</url-pattern>
+			<url-pattern>/project-basic.jsp</url-pattern>
+			<url-pattern>/project-details.jsp</url-pattern>
+			<url-pattern>/project-features.jsp</url-pattern>
+			<url-pattern>/project-timeline-events.jsp</url-pattern>
+			<url-pattern>/project-template.jsp</url-pattern>
+			<url-pattern>/view-create-update.jsp</url-pattern>
+			<url-pattern>/view.jsp</url-pattern>
+
+			<url-pattern>/preferences.jsp</url-pattern>
+
+			<url-pattern>/api/*</url-pattern>
+		</web-resource-collection>
+
+		<auth-constraint>
+			<!--<role-name>{{ldap.group.name}}</role-name>-->
+			<role-name>*</role-name>
+		</auth-constraint>
+
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<form-login-config>
+			<form-login-page>/login.jsp</form-login-page>
+			<form-error-page>/login.jsp</form-error-page>
+		</form-login-config>
+	</login-config>
+
+	<!-- use this to just check if they exist in LDAP and leave authorization to the app -->
+	<security-role>
+		<description>Authenticated Scenario Explorer user</description>
+		<role-name>*</role-name>
+	</security-role>
+
+	<!-- use this if there is a named group in LDAP we want to use to check for authorization -->
+	<!--<security-role>-->
+	<!--<description>Authenticated Scenario Explorer user</description>-->
+	<!--<role-name>{{ldap.group.name}}</role-name>-->
+	<!--</security-role>-->

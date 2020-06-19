@@ -1,0 +1,356 @@
+<project name="LAS - Scenario Explorer">
+
+	<!-- ####################################################################################################################################################################### -->
+	<!-- configuration -->
+
+	<!-- compile options -->
+	<property name="java.target.version" value="1.10" />
+
+	<!-- general -->
+	<property name="app.name" value="Scenario Explorer" />
+	<property name="app.version" value="0.9.1-beta" />
+	<property name="ldap.basedn" value="dc=imaginationsupport,dc=com" />
+
+	<!-- web deploy paths -->
+	<property name="web-ui.deploy.path" value="/scenarioexplorer" />
+	<property name="web-user-support.deploy.path" value="/user-support" />
+
+	<!-- get the path to the root of the source code -->
+	<dirname property="ant.file.dir" file="${ant.file}" />
+	<dirname property="src.root.path" file="${ant.file.dir}" />
+
+	<!-- build paths -->
+	<property name="build.path" value="${src.root.path}/support/build" />
+	<property name="output.path" value="${src.root.path}/support/output" />
+	<property name="junit.working.dir.path" value="${src.root.path}/support/junit-working" />
+	<property name="junit.log.path" value="${junit.working.dir.path}/unit-tests.log" />
+
+	<!-- paths to projects -->
+	<property name="common.project.path" value="${src.root.path}/common" />
+	<property name="console-tools.project.path" value="${src.root.path}/console-tools" />
+	<property name="console-tools.working-dir.project.path" value="${console-tools.project.path}/working-dir" />
+	<property name="common.lib.path" value="${common.project.path}/lib" />
+	<property name="web.src.path" value="${src.root.path}/web" />
+	<property name="web-common.project.path" value="${web.src.path}/web-common" />
+	<property name="web-ui.project.path" value="${web.src.path}/web-ui" />
+	<property name="web-user-support.project.path" value="${web.src.path}/web-user-support" />
+	<property name="web-common.lib.path" value="${web-common.project.path}/lib" />
+	<property name="support.project.path" value="${src.root.path}/support" />
+
+	<!-- web lib filenames -->
+	<property name="apache-tomcat-catalina-ant.jar.filename" value="catalina-ant.jar" />
+	<property name="apache-tomcat-servlet-api.jar.filename" value="servlet-api.jar" />
+	<property name="apache-tomcat-tomcat-coyote.jar.filename" value="tomcat-coyote.jar" />
+	<property name="apache-tomcat-tomcat-util.jar.filename" value="tomcat-util.jar" />
+	<property name="apache-tomcat-jsp-api.jar.filename" value="jsp-api.jar" />
+	<property name="apache-tomcat-websocket-api.jar.filename" value="websocket-api.jar" />
+	<property name="apache-tomcat-catalina.jar.filename" value="catalina.jar" />
+
+	<!-- common lib filenames -->
+	<property name="log4j-api.jar.filename" value="log4j-api-2.11.1.jar" />
+	<property name="log4j-core.jar.filename" value="log4j-core-2.11.1.jar" />
+	<property name="log4j-web.jar.filename" value="log4j-web-2.11.1.jar" />
+	<property name="log4j-jul.jar.filename" value="log4j-jul-2.11.1.jar" />
+	<property name="log4j-mongodb.jar.filename" value="log4j-mongodb3-2.11.1.jar" />
+	<property name="org.json.jar.filename" value="org.json.jar" />
+	<property name="mongo-java-driver.jar.filename" value="mongo-java-driver-3.7.0.jar" />
+	<property name="morphia.jar.filename" value="morphia-1.3.2.jar" />
+	<property name="apache-commons-codec.jar.filename" value="apache-commons-codec-1.11.jar" />
+	<property name="apache-commons-csv.jar.filename" value="apache-commons-csv-1.5.jar" />
+	<property name="apache-commons-lang3.jar.filename" value="apache-commons-lang3-3.7.jar" />
+	<property name="apache-commons-math3.jar.filename" value="apache-commons-math3-3.6.1.jar" />
+	<property name="apache-commons-text.jar.filename" value="apache-commons-text-1.3.jar" />
+	<property name="apache-httpcomponents-httpcore.jar.filename" value="apache-httpcomponents-httpcore-4.4.9.jar" />
+	<property name="apache-httpcomponents-httpclient.jar.filename" value="apache-httpcomponents-httpclient-4.5.5.jar" />
+	<property name="apache-httpcomponents-httpmime.jar.filename" value="apache-httpcomponents-httpmime-4.5.5.jar" />
+	<property name="junit4.jar.filename" value="junit-4.12.jar" />
+	<property name="hamcrest-core.jar.filename" value="hamcrest-core-1.3.jar" /><!-- junit4 dependency -->
+	<property name="javax-mail.jar.filename" value="javax.mail-1.6.1.jar" />
+	<property name="gson.jar.filename" value="gson-2.8.1.jar" />
+	<property name="nashornsandbox.jar.filename" value="nashornsandbox.jar" />
+	<property name="js-beautify.jar.filename" value="js-beautify-1.6.12.jar" />
+
+	<!-- paths to web libraries -->
+	<property name="apache-tomcat-catalina-ant.jar.path" value="${web-common.lib.path}/${apache-tomcat-catalina-ant.jar.filename}" />
+	<property name="apache-tomcat-servlet-api.jar.path" value="${web-common.lib.path}/${apache-tomcat-servlet-api.jar.filename}" />
+	<property name="apache-tomcat-tomcat-coyote.jar.path" value="${web-common.lib.path}/${apache-tomcat-tomcat-coyote.jar.filename}" />
+	<property name="apache-tomcat-tomcat-util.jar.path" value="${web-common.lib.path}/${apache-tomcat-tomcat-util.jar.filename}" />
+	<property name="apache-tomcat-jsp-api.jar.path" value="${web-common.lib.path}/${apache-tomcat-jsp-api.jar.filename}" />
+	<property name="apache-tomcat-websocket-api.jar.path" value="${web-common.lib.path}/${apache-tomcat-websocket-api.jar.filename}" />
+	<property name="apache-tomcat-catalina.jar.path" value="${web-common.lib.path}/${apache-tomcat-catalina.jar.filename}" />
+
+	<!-- paths to common libraries -->
+	<property name="log4j-api.jar.path" value="${common.lib.path}/${log4j-api.jar.filename}" />
+	<property name="log4j-core.jar.path" value="${common.lib.path}/${log4j-core.jar.filename}" />
+	<property name="log4j-web.jar.path" value="${common.lib.path}/${log4j-web.jar.filename}" />
+	<property name="log4j-jul.jar.path" value="${common.lib.path}/${log4j-jul.jar.filename}" />
+	<property name="log4j-mongodb.jar.path" value="${common.lib.path}/${log4j-mongodb.jar.filename}" />
+	<property name="org.json.jar.path" value="${common.lib.path}/${org.json.jar.filename}" />
+	<property name="mongo-java-driver.jar.path" value="${common.lib.path}/${mongo-java-driver.jar.filename}" />
+	<property name="morphia.jar.path" value="${common.lib.path}/${morphia.jar.filename}" />
+	<property name="apache-commons-codec.jar.path" value="${common.lib.path}/${apache-commons-codec.jar.filename}" />
+	<property name="apache-commons-csv.jar.path" value="${common.lib.path}/${apache-commons-csv.jar.filename}" />
+	<property name="apache-commons-lang3.jar.path" value="${common.lib.path}/${apache-commons-lang3.jar.filename}" />
+	<property name="apache-commons-math3.jar.path" value="${common.lib.path}/${apache-commons-math3.jar.filename}" />
+	<property name="apache-commons-text.jar.path" value="${common.lib.path}/${apache-commons-text.jar.filename}" />
+	<property name="apache-httpcomponents-httpcore.jar.path" value="${common.lib.path}/${apache-httpcomponents-httpcore.jar.filename}" />
+	<property name="apache-httpcomponents-httpclient.jar.path" value="${common.lib.path}/${apache-httpcomponents-httpclient.jar.filename}" />
+	<property name="apache-httpcomponents-httpmime.jar.path" value="${common.lib.path}/${apache-httpcomponents-httpmime.jar.filename}" />
+	<property name="junit4.jar.path" value="${common.lib.path}/${junit4.jar.filename}" />
+	<property name="hamcrest-core.jar.path" value="${common.lib.path}/${hamcrest-core.jar.filename}" /><!-- junit4 dependency -->
+	<property name="javax-mail.jar.path" value="${common.lib.path}/${javax-mail.jar.filename}" />
+	<property name="gson.jar.path" value="${common.lib.path}/${gson.jar.filename}" />
+	<property name="nashornsandbox.jar.path" value="${common.lib.path}/${nashornsandbox.jar.filename}" />
+	<property name="js-beautify.jar.path" value="${common.lib.path}/${js-beautify.jar.filename}" />
+
+	<!-- paths to support files -->
+	<property name="junit-report.config.path" value="${src.root.path}/support/junit-report-config" />
+
+	<!-- output filenames -->
+	<property name="common.jar.filename" value="las-scenario-explorer.common.jar" />
+	<property name="web-ui.war.filename" value="las-scenario-explorer.web.ui.war" />
+	<property name="web-ui.tomcat.server.lib.zip.filename" value="web-ui-tomcat-server-libs.zip" />
+	<property name="web-user-support.war.filename" value="las-scenario-explorer.web.user-support.war" />
+	<property name="web-user-support.tomcat.server.lib.zip.filename" value="web-user-support-tomcat-server-libs.zip" />
+	<property name="swagger-v2.filename" value="swagger-v2.yaml" />
+	<property name="openapi-v3.filename" value="openapi-v3.yaml" />
+
+	<!-- docker image paths -->
+	<property name="docker.image.path" value="${src.root.path}/docker/images" />
+	<property name="docker.image.web-ui-ara.path" value="${docker.image.path}/web-ui-ara" />
+	<property name="docker.image.web-ui-ncsu.path" value="${docker.image.path}/web-ui-ncsu" />
+
+	<!-- load the environment variables into properties -->
+	<property environment="env" />
+
+	<!-- ####################################################################################################################################################################### -->
+	<!-- include all of the helper ant projects -->
+
+	<import file="build-common.ant" />
+	<import file="build-console-tools.ant" />
+	<import file="build-web-ui.ant" />
+	<import file="build-web-user-support.ant" />
+	<import file="build-docker.ant" />
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="clean" description="Cleans intermediate files created during a build">
+		<delete dir="${build.path}" />
+		<delete dir="${output.path}" />
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="load-properties-teamcity" depends="check-running-in-teamcity" if="running.in.teamcity">
+
+		<echo message="Loading from TeamCity" />
+
+		<!-- build.number = BUILD_NUMBER -->
+		<fail message="Environment variable not set: BUILD_NUMBER" unless="env.BUILD_NUMBER" />
+		<property name="build.number" value="${env.BUILD_NUMBER}" />
+
+		<!-- git.commit.id = GIT_COMMIT -->
+		<fail message="Environment variable not set: BUILD_VCS_NUMBER" unless="env.BUILD_VCS_NUMBER" />
+		<property name="git.commit.id" value="${env.BUILD_VCS_NUMBER}" />
+
+		<!-- git.branch = GIT_BRANCH -->
+		<!-- Note: this is a custom property that needs to be mapped from %teamcity.build.branch% -->
+		<fail message="Environment variable not set: SE_GIT_BRANCH" unless="env.SE_GIT_BRANCH" />
+		<property name="git.branch" value="${env.SE_GIT_BRANCH}" />
+
+	</target>
+
+	<target name="load-properties-deploy-tomcat">
+
+		<echo message="Loading properties for deploying to tomcat" />
+
+		<!-- username -->
+		<fail message="Environment variable not set: SE_TOMCAT_USERNAME" unless="env.SE_TOMCAT_USERNAME" />
+		<property name="tomcat.username" value="${env.SE_TOMCAT_USERNAME}" />
+
+		<!-- password -->
+		<fail message="Environment variable not set: SE_TOMCAT_PASSWORD" unless="env.SE_TOMCAT_PASSWORD" />
+		<property name="tomcat.password" value="${env.SE_TOMCAT_PASSWORD}" />
+
+		<!-- host -->
+		<fail message="Environment variable not set: SE_TOMCAT_HOSTNAME" unless="env.SE_TOMCAT_HOSTNAME" />
+		<property name="tomcat.hostname" value="${env.SE_TOMCAT_HOSTNAME}" />
+
+		<!-- protocol -->
+		<fail message="Environment variable not set: SE_TOMCAT_PROTOCOL" unless="env.SE_TOMCAT_PROTOCOL" />
+		<property name="tomcat.protocol" value="${env.SE_TOMCAT_PROTOCOL}" />
+
+		<!-- port -->
+		<fail message="Environment variable not set: SE_TOMCAT_PORT" unless="env.SE_TOMCAT_PORT" />
+		<property name="tomcat.port" value="${env.SE_TOMCAT_PORT}" />
+
+	</target>
+
+	<target name="load-properties-localdev" unless="running.in.teamcity">
+
+		<echo message="Using Local Dev setup" />
+
+		<exec executable="git" failonerror="true" outputproperty="localdev.git.branch">
+			<arg line="rev-parse" />
+			<arg line="--abbrev-ref" />
+			<arg line="HEAD" />
+		</exec>
+
+		<property name="build.number.file.path" value="${support.project.path}/localdev.build.number.txt" />
+		<buildnumber file="${build.number.file.path}" />
+
+		<property name="build.number" value="localdev" />
+		<property name="git.commit.id" value="localdev" />
+		<property name="git.branch" value="${localdev.git.branch}" />
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="use-auth">
+
+		<fail if="config.finished" message="Config already finished!" />
+
+		<property name="using.auth" value="true" />
+		<property name="using.auth.bool" value="true" />
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="finish-config" depends="
+		load-properties-teamcity,
+		load-properties-localdev,
+		setup-build-time">
+
+		<fail if="config.finished" message="Config already finished!" />
+		<property name="config.finished" value="true" />
+
+		<property name="build.type" value="debug" />
+		<property name="closure.compiler.level" value="WHITESPACE_ONLY" />
+		<property name="sass.style" value="expanded" />
+		<property name="using.auth.bool" value="false" />
+
+		<!-- set default value if not already set -->
+		<property name="ldap.basedn" value="none" />
+
+		<echo message="app.name =        ${app.name}" />
+		<echo message="app.version =     ${app.version}" />
+		<echo message="build.number =    ${build.number}" />
+		<echo message="git.commit.id =   ${git.commit.id}" />
+		<echo message="git.branch =      ${git.branch}" />
+		<echo message="" />
+		<echo message="build.time =      ${build.time}" />
+		<echo message="build.type =      ${build.type}" />
+		<echo message="using.auth =      ${using.auth.bool}" />
+		<echo message="ldap base dn =    ${ldap.basedn}" />
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="create-build-dir">
+		<mkdir dir="${build.path}" />
+	</target>
+
+	<target name="create-output-dir">
+		<mkdir dir="${output.path}" />
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="setup-build-time">
+		<tstamp>
+			<format property="build.time" pattern="yyyy-MM-dd HH:mm:ss" timezone="America/New_York" />
+		</tstamp>
+		<echo message="Build time: ${build.time}" />
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="check-running-in-teamcity">
+
+		<condition property="running.in.teamcity">
+			<isset property="env.TEAMCITY_VERSION" />
+		</condition>
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="verify-path-exists">
+		<fail message="Missing: ${path.to.verify}">
+			<condition>
+				<not>
+					<available file="${path.to.verify}" />
+				</not>
+			</condition>
+		</fail>
+		<echo message="Verified: ${path.to.verify}" />
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="verify-running-as-root">
+		<condition property="is.root">
+			<equals arg1="${user.name}" arg2="root" />
+		</condition>
+		<fail message="Must be run as root, not ${user.name}" unless="is.root" />
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="init-tomcat-tasks">
+
+		<path id="tomcat.classpath">
+			<pathelement location="${apache-tomcat-catalina-ant.jar.path}" />
+			<pathelement location="${apache-tomcat-tomcat-coyote.jar.path}" />
+			<pathelement location="${apache-tomcat-tomcat-util.jar.path}" />
+		</path>
+
+		<taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask" classpathref="tomcat.classpath" />
+		<taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask" classpathref="tomcat.classpath" />
+
+	</target>
+
+	<target name="undeploy-tomcat" depends="init-tomcat-tasks">
+
+		<fail unless="tomcat.username" message="Property missing: tomcat.username" />
+		<fail unless="tomcat.password" message="Property missing: tomcat.password" />
+		<fail unless="tomcat.protocol" message="Property missing: tomcat.protocol" />
+		<fail unless="tomcat.hostname" message="Property missing: tomcat.hostname" />
+		<fail unless="tomcat.port" message="Property missing: tomcat.port" />
+		<fail unless="tomcat.deploy.path" message="Property missing: tomcat.deploy.path" />
+
+		<undeploy
+			url="${tomcat.protocol}://${tomcat.hostname}:${tomcat.port}/manager/text"
+			username="${tomcat.username}"
+			password="${tomcat.password}"
+			path="${tomcat.deploy.path}"
+			failonerror="false" />
+
+	</target>
+
+	<target name="deploy-tomcat" depends="init-tomcat-tasks">
+
+		<fail unless="tomcat.username" message="Property missing: tomcat.username" />
+		<fail unless="tomcat.password" message="Property missing: tomcat.password" />
+		<fail unless="tomcat.protocol" message="Property missing: tomcat.protocol" />
+		<fail unless="tomcat.hostname" message="Property missing: tomcat.hostname" />
+		<fail unless="tomcat.port" message="Property missing: tomcat.port" />
+		<fail unless="tomcat.deploy.path" message="Property missing: tomcat.deploy.path" />
+		<fail unless="war.path" message="Property missing: war.path" />
+
+		<echo message="Deploying to: ${tomcat.protocol}://${tomcat.hostname}:${tomcat.port} at ${tomcat.deploy.path}" />
+		<deploy
+			url="${tomcat.protocol}://${tomcat.hostname}:${tomcat.port}/manager/text"
+			username="${tomcat.username}"
+			password="${tomcat.password}"
+			path="${tomcat.deploy.path}"
+			war="file:${war.path}" />
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+</project>

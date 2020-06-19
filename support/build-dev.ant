@@ -1,0 +1,156 @@
+<project name="LAS - Scenario Explorer - Local Dev Tasks">
+
+	<!-- ####################################################################################################################################################################### -->
+	<!--
+	Common Dev Tasks:
+
+		normal dev:
+
+			dev-rebuild-web-ui-ara
+			dev-rebuild-web-user-support-ara
+
+		normal dev, with auth:
+
+			dev-rebuild-web-ui-ara-auth
+			dev-rebuild-web-user-support-ara-auth
+
+		ncsu:
+
+			dev-rebuild-web-ui-ncsu
+			dev-rebuild-web-user-support-ncsu
+
+		prep-docker-build-web-ui-ara
+		prep-docker-build-web-user-support-ara
+
+		prep-docker-build-web-ui-ncsu
+		prep-docker-build-web-user-support-ncsu
+
+		build-docker-image-web-ui-ara
+		build-docker-image-web-ui-ncsu
+
+		push-docker-image-web-ui-ara-dev
+		push-docker-image-web-ui-ncsu-dev
+
+		generate-ant-build-graph
+	-->
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="dev-rebuild-web-ui-ara" depends="
+		clean,
+		use-web-ui-theme-ara,
+		configure-dev-docker-build-web-ui,
+		deploy-web-ui,
+		display-web-ui-build-success" />
+	<target name="dev-rebuild-web-ui-ara-auth" depends="
+		clean,
+		use-auth,
+		use-web-ui-theme-ara,
+		configure-dev-docker-build-web-ui,
+		deploy-web-ui,
+		display-web-ui-build-success" />
+	<target name="dev-rebuild-web-user-support-ara" depends="
+		clean,
+		use-web-user-support-theme-ara,
+		configure-dev-docker-build-web-user-support,
+		deploy-web-user-support,
+		display-web-user-support-build-success" />
+	<target name="dev-rebuild-web-user-support-ara-auth" depends="
+		clean,
+		use-auth,
+		use-web-user-support-theme-ara,
+		configure-dev-docker-build-web-user-support,
+		deploy-web-user-support,
+		display-web-user-support-build-success" />
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="dev-rebuild-web-ui-ncsu" depends="
+		clean,
+		use-web-ui-theme-ara,
+		configure-dev-docker-build-web-ui,
+		deploy-web-ui,
+		display-web-ui-build-success" />
+	<target name="dev-rebuild-web-user-support-ncsu" depends="
+		clean,
+		use-web-user-support-theme-ara,
+		configure-dev-docker-build-web-user-support,
+		deploy-web-user-support,
+		display-web-user-support-build-success" />
+
+	<!-- ####################################################################################################################################################################### -->
+	<!-- helper tasks to configure the tomcat deploy -->
+
+	<target name="configure-dev-docker-build-web-ui">
+		<fail message="Tomcat deploy path already set!" if="tomcat.deploy.path" />
+
+		<property name="tomcat.deploy.path" value="${web-ui.deploy.path}" />
+	</target>
+
+	<target name="configure-dev-docker-build-web-user-support">
+		<fail message="Tomcat deploy path already set!" if="tomcat.deploy.path" />
+
+		<property name="tomcat.deploy.path" value="${web-user-support.deploy.path}" />
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="display-web-ui-build-success">
+		<echo message="Build number:     ${build.number}" />
+		<echo message="Build type:       ${build.type}" />
+		<echo />
+		<echo message="Common JAR:       ${common.jar.path}" />
+		<echo message="Web UI WAR:       ${web-ui.war.path}" />
+	</target>
+
+	<target name="display-web-user-support-build-success">
+		<echo message="Build number:     ${build.number}" />
+		<echo message="Build type:       ${build.type}" />
+		<echo />
+		<echo message="Common JAR:       ${common.jar.path}" />
+		<echo message="User Support WAR: ${web-user-support.war.path}" />
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="install-local-dev-server-tomcat-jars" depends="verify-running-as-root">
+
+		<!-- verify the tomcat install location -->
+		<fail message="Property not set: SE_TOMCAT_INSTALL_PATH" unless="env.SE_TOMCAT_INSTALL_PATH" />
+		<antcall target="verify-path-exists">
+			<param name="path.to.verify" value="${env.SE_TOMCAT_INSTALL_PATH}" />
+		</antcall>
+
+		<!-- copy required files -->
+		<copy todir="${env.SE_TOMCAT_INSTALL_PATH}">
+			<resources refid="web-ui.tomcat.jars.fileset" />
+			<resources refid="web-user-support.tomcat.jars.fileset" />
+		</copy>
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<target name="generate-ant-build-graph" depends="create-build-dir,create-output-dir">
+
+		<echo message="Generating DOT input..." />
+		<exec executable="python3.6" dir="${build.path}">
+			<arg value="${support.project.path}/helper-scripts/generate-ant-build-diagram-dot-input.py" />
+		</exec>
+
+		<echo message="Running GraphViz DOT to generate PNG..." />
+		<exec executable="dot">
+			<arg value="-Tpng" />
+			<arg value="-o" />
+			<arg value="${output.path}/ant-dependency-graph.png" />
+			<arg value="${build.path}/ant-build-diagram.gv" />
+		</exec>
+
+	</target>
+
+	<!-- ####################################################################################################################################################################### -->
+
+	<import file="build.xml" />
+
+	<!-- ####################################################################################################################################################################### -->
+
+</project>

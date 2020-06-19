@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="support/closure-compiler/closure-compiler-v20161201.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-api-2.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/mongo-java-driver-3.4.2.jar"/>
+	<classpathentry kind="lib" path="lib/catalina-ant.jar"/>
+	<classpathentry kind="lib" path="lib/java-hamcrest-2.0.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/jsp-api.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-core-2.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-web-2.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/morphia-1.3.2.jar"/>
+	<classpathentry kind="lib" path="lib/org.json.jar"/>
+	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="lib/tomcat-coyote.jar"/>
+	<classpathentry kind="lib" path="lib/tomcat-util.jar"/>
+	<classpathentry kind="lib" path="lib/websocket-api.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/common"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

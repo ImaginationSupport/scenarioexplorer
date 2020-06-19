@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+
+	<Appenders>
+
+		<Console name="console.appender" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level %file(%line) - %msg%n" />
+		</Console>
+
+		<File name="unit.test.appender" fileName="unit-tests.log">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level %file(%line) - %msg%n" />
+		</File>
+
+	</Appenders>
+
+	<Loggers>
+
+		<Root level="debug">
+			<AppenderRef ref="unit.test.appender" />
+		</Root>
+
+		<Logger name="unit.test.logger" level="debug" additivity="false">
+			<AppenderRef ref="unit.test.appender" level="debug" />
+		</Logger>
+
+		<Logger name="console.logger" level="debug" additivity="false">
+			<AppenderRef ref="console.appender" level="info" />
+		</Logger>
+
+	</Loggers>
+
+</Configuration>

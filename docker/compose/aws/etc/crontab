@@ -1,0 +1,29 @@
+######################### reverse-proxy #########################
+
+30 12 * * 4 docker exec -t reverse-proxy certbot renew > /var/log/cron-reverse-proxy-certbot-autorenew.log 2>&1
+
+######################### teamcity #########################
+
+31 12 * * * docker exec teamcity-database /scripts/run-database-backup.sh >> /docker-data/backups/cron-teamcity-database.log 2>&1
+
+######################### demo cluster #########################
+
+# 32 12 * * * docker exec mongo-db-demo /run-database-backup.sh >> /docker-data/backups/cron-demo-mongo-db.log 2>&1
+# 33 12 * * * docker exec ldap-demo /run-ldap-backup.sh >> /docker-data/backups/cron-demo-ldap.log 2>&1
+
+######################### dev cluster #########################
+
+34 12 * * * docker exec mongo-db-ara-dev /run-database-backup.sh >> /docker-data/backups/cron-dev-mongo-db.log 2>&1
+35 12 * * * docker exec ldap-ara-dev /run-ldap-backup.sh >> /docker-data/backups/cron-dev-ldap.log 2>&1
+
+######################### ncsu cluster #########################
+
+# 36 12 * * * docker exec mongo-db-ncsu /run-database-backup.sh >> /docker-data/backups/cron-ncsu-mongo-db.log 2>&1
+# 37 12 * * * docker exec ldap-ncsu /run-ldap-backup.sh >> /docker-data/backups/cron-ncsu-ldap.log 2>&1
+
+######################### ncsu-dev cluster #########################
+
+38 12 * * * docker exec mongo-db-ncsu-dev /run-database-backup.sh >> /docker-data/backups/cron-ncsu-dev-mongo-db.log 2>&1
+39 12 * * * docker exec ldap-ncsu-dev /run-ldap-backup.sh >> /docker-data/backups/cron-ncsu-dev-ldap.log 2>&1
+
+######################### done #########################

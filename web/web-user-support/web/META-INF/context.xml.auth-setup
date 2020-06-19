@@ -1,0 +1,18 @@
+	<Realm className="org.apache.catalina.realm.CombinedRealm">
+
+		<Realm className="org.apache.catalina.realm.JNDIRealm"
+			   connectionURL="${SE_LDAP_PROTOCOL}://${SE_LDAP_SERVER}:${SE_LDAP_PORT}"
+			   connectionName="${SE_LDAP_ROOT_DN}"
+			   connectionPassword="${SE_LDAP_ROOT_PW}"
+
+			   userPattern="uid={0},ou=people,{{ldap.basedn}}"
+
+			   roleBase="ou=groups,{{ldap.basedn}}"
+			   roleName="cn"
+			   roleSearch="(uniqueMember={0})"
+		/>
+
+		<Realm className="org.apache.catalina.realm.UserDatabaseRealm" />
+
+	</Realm>
+

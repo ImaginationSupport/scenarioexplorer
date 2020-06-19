@@ -1,0 +1,34 @@
+include     /etc/openldap/schema/core.schema
+include     /etc/openldap/schema/cosine.schema
+include     /etc/openldap/schema/inetorgperson.schema
+#include    /etc/openldap/schema/nis.schema
+
+pidfile     /var/run/openldap/slapd.pid
+argsfile    /var/run/openldap/slapd.args
+
+#loglevel    -1 (set on Dockerfile entrypoint.sh command line)
+
+#######################################################################
+# MDB database definitions
+#######################################################################
+
+moduleload  back_mdb
+
+database    mdb
+maxsize     1073741824
+
+suffix      "{{getenv "SE_LDAP_BASE_DN"}}"
+
+access to dn.sub="{{getenv "SE_LDAP_BASE_DN"}}" attrs=userPassword
+    by anonymous auth
+
+rootdn      "{{getenv "SE_LDAP_ROOT_DN"}}"
+rootpw      "{{getenv "SE_LDAP_ROOT_PW"}}"
+
+directory   /var/lib/openldap
+
+index       uid             eq
+index       cn,gn,mail      eq,sub
+index       sn              eq,sub
+index       ou              eq
+index       default         eq,sub

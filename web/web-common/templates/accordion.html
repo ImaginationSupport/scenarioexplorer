@@ -1,0 +1,16 @@
+<div class="card">
+	<div class="card-header bg-dark" id="accordion-heading-{{idSuffix}}">
+		<h2 class="mb-0">
+			<button class="btn btn-link text-light pl-0 accordion-link" type="button" data-toggle="collapse" data-target="#accordion-body-{{idSuffix}}" aria-expanded="{{initiallyExpanded}}" aria-controls="accordion-body-{{idSuffix}}">
+				<span class="accordion-icon-holder mr-1"></span>
+				{{title}}
+			</button>
+		</h2>
+	</div>
+
+	<div id="accordion-body-{{idSuffix}}" class="accordion-body {{bodyCssClasses}}" aria-labelledby="accordion-heading-{{idSuffix}}" data-parent="#{{parentId}}">
+		<div class="card-body">
+			{{body}}
+		</div>
+	</div>
+</div>

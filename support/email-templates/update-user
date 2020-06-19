@@ -1,0 +1,11 @@
+Hello,
+
+Your Scenario Explorer password has been updated by an administrator:
+
+Username: {{uid}}
+Password: {{password}}
+
+If you need to reset your password or have trouble logging in, please visit:
+<a href="{{web-user-support-url}}">{{web-user-support-url}}</a>
+
+Thanks!
